@@ -18,8 +18,7 @@ namespace CakeMailTest\TodoList;
 
 class handleLists extends listObjects {
 
-	
-	
+		
 	/*
 	 * function create => to create a new Todolist with a specific name to be identified
 	 * @var nameList = String => name of the list 
@@ -35,9 +34,10 @@ class handleLists extends listObjects {
 		return true;
 	}
 	
+	
 	public function modify($nameList, array $valuesArr) {
 		
-		if (arrayKeyExists('nameList', $valuesArr)) parent::modify($this->getObject($nameList),$valuesArr);
+		if (parent::arrayKeyExists('NAMELIST', $valuesArr)) parent::modify($this->getObject($nameList),$valuesArr);
 		
 	}
 	
@@ -63,7 +63,8 @@ class handleLists extends listObjects {
 	
 	public function addItem($nameList,array $itemsArr) { 
 		
-			if (arrayKeyExists('content', $itemsArr)) {	
+			echo 'on ajouter addItem';
+			if (parent::arrayKeyExists('CONTENT', $itemsArr)) {	
 				return $this->getObject($nameList)->addItem($itemsArr);
 			}	
 		}

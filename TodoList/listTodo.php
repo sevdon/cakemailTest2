@@ -69,8 +69,8 @@ class listTodo extends listObjects {
 	
 	public function addItem($itemsArr) {
 		
-		 if (arrayKeyExists('content', $itemsArr)) {
-		 	$this->itemArr['content']=new item($itemsArr['content']);	
+		 if (arrayKeyExists('CONTENT', $itemsArr)) {
+		 	$this->itemArr['CONTENT']=new item($itemsArr['CONTENT']);	
 		 	return true;	
 		 }
 	}
@@ -83,11 +83,11 @@ class listTodo extends listObjects {
 	 */
 	
 	public function delItem($filters) {
-		if (arrayKeyExists('content', $filter)) {
+		if (arrayKeyExists('CONTENT', $filter)) {
 			
-			unset($this->itemArr[$filter['content']]);
-		} elseif (arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_STATUS) $this->itemArr = array_filter($this->itemArr,'self::filter_status_done');
-		elseif (arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_DONE) $this->itemArr = array_filter($this->itemArr,'self::filter_status_default');
+			unset($this->itemArr[$filter['CONTENT']]);
+		} elseif (arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_STATUS) $this->itemArr = array_filter($this->itemArr,'self::filter_status_done');
+		elseif (arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_DONE) $this->itemArr = array_filter($this->itemArr,'self::filter_status_default');
 	}
 	
 	

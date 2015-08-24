@@ -19,6 +19,31 @@ namespace CakeMailTest\TodoList;
 
 final class handleListsStorageDB extends handleLists {
 
+	private $DB = null;
+	
+	/*
+	 * static function generate_lists(Array $listArr) 
+	 * This method is not optimized 
+	 * Using 2 loop is not the best solution 
+	 * To next version of API : check for better solution by remplacing fo & while loops by manipulate array functions with filters and a new function add_items to add multiple items 
+	 * 
+	 * 
+	 */
+	
+	protected function generate_lists($listArr) {
+		
+		for ($i=0;$i<$listArr[0]['count_row'];$i++) {
+			
+			$nameList = $listArr[$i]['name'];
+			parent::create($nameList);
+			$id = $listArr[$i]['id'];			
+			while ($id == $listArr[$i]['id']) {
+				if ($listArr[$i]['content']!='') parent::addItem($nameList,array ('CONTENT'=>$listArr[$i]['content'],'STATUS'=>$listArr[$i]['status']));
+				$i++;
+				if ($i>=$listArr[0]['count_row']) break;
+			}
+		}
+	}
 	
 	
 	/*
@@ -27,12 +52,27 @@ final class handleListsStorageDB extends handleLists {
 	 * 
 	 */
 	
-	public function create($nameList) { 
+	public function __construct() {
+		
+		try {
+			$this->DB = new DataBase(DB_NAME,DB_USER,DB_PWD,DB_HOST);
+			$sql = "SELECT lists.name,lists.id,'' AS content,'' AS status FROM lists WHERE lists.id NOT IN (select items.list_id from items) 
+				    UNION SELECT lists.name,lists.id,items.content,items.status FROM lists,items WHERE lists.id = items.list_id";
+			$listArr = $this->DB->query_select($sql); 
+		} catch (\PDOException $e)	{
+				throw new ExceptionToDoList ('Error DB to connect : '.$e->getMessage()); 
+		} 
+		
+		$this->generate_lists($listArr);
+	}
 	
+	
+	public function create($nameList) { 
+
+	    if ($nameList=='') throw new ExceptionToDoList ('Error create new list : Namelist is empty'); 
 		if (parent::create($nameList)) {
 			try {
-				$DB = new DataBase(DB_NAME,DB_USER,DB_PWD,DB_HOST);
-				$DB->prepareAndExecute("INSERT into lists (name,user_id) VALUES ('".DataBase::format_text_sql($nameList)."',".user::ID.")",'INSERT');
+				$this->DB->prepareAndExecute("INSERT into lists (name,user_id) VALUES ('".DataBase::format_text_sql($nameList)."',".user::ID.")",'INSERT');
 			} catch (\PDOException $e)	{
 				throw new ExceptionToDoList ('Error DB to insert new list : '.$e->getMessage()); 
 			}
@@ -42,11 +82,13 @@ final class handleListsStorageDB extends handleLists {
 		
 	} 
 	
+	/*
 	public function modify($nameList, array $valuesArr) {
 		
-		if (arrayKeyExists('nameList', $valuesArr)) parent::modify($this->getObject($nameList),$valuesArr);
+		
 		
 	}
+	*/
 	
 	/*
 	 * function delete => to delete a Todolist identified with his name
@@ -54,11 +96,13 @@ final class handleListsStorageDB extends handleLists {
 	 * 
 	 */
 	
+	/*
 	public function delete($nameList) {
 		$this->getObject($nameList)->__destruct();
 		unset($this->listsArr[$nameList]); 
 		
 	}
+	*/
 	
 	/*
 	 * function addItem => to add a new item in a specific list
@@ -70,8 +114,8 @@ final class handleListsStorageDB extends handleLists {
 	
 	public function addItem($nameList,array $itemsArr) { 
 		
-			if (arrayKeyExists('content', $itemsArr)) {	
-				return $this->getObject($nameList)->addItem($itemsArr);
+			if (parent::addItem($nameList,$itemsArr)) {
+				return true;
 			}	
 		}
 		

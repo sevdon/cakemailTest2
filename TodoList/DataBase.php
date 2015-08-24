@@ -13,7 +13,7 @@ final class DataBase {
  	private $dsn=null;
 	private $pdo = null;
 	private $typeBDD='MYSQL';
-	public $debugg_affiche = false;
+	public $debugg_affiche = true;
 	protected $prep=null;
 	private $check_injection_sql = false;
 	
@@ -50,10 +50,9 @@ final class DataBase {
 		try {
 			$this->pdo = new \PDO($this->dsn);
 		} catch (\PDOException $e) {
-			die('Error de connection ˆ la BDD : '.$e->getMessage());	
+			die('Error connect to DB : '.$e->getMessage());	
 		}
 	}
-	
 	
 	
 	
