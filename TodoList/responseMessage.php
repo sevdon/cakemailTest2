@@ -2,20 +2,19 @@
 /*
  * API CakeMailTest TodoList V1.0
  * Author : Severine Donnay
- * abstract class response 
+ * abstract class responseMessage 
  * 
  * 
  */
 namespace CakeMailTest\TodoList;
-abstract class response {
+abstract class responseMessage {
 	
 	const MESSAGE_CREATE_SUCCESS='New ToDolist was created successfully';
 	const MESSAGE_MODIFY_SUCCESS='ToDolist was modified successfully';
 	const MESSAGE_DEL_SUCCESS='ToDolist was deleted successfully';
 	const MESSAGE_ADDITEM_SUCCESS='New item was added successfully';
 	const MESSAGE_MODIFYITEM_SUCCESS='Item was modified successfully';
-	const MESSAGE_DELITEM_SUCCESS='Item was deleted successfully';
-	
+	const MESSAGE_DELITEM_SUCCESS='Item was deleted successfully';	
 	const MESSAGE_CREATE_FAIL='Fail : ToDolist was not created';
 	const MESSAGE_MODIFY_FAIL='Fail : ToDolist was not modified';
 	const MESSAGE_DEL_FAIL='Fail : ToDolist was not deleted';

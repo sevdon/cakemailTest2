@@ -6,11 +6,7 @@
  * https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader-examples.md
  *
  */
-require_once 'config.php';
-if (version_compare(PHP_VERSION, '5.4.0', '<')) {
-    throw new CakeMailTest\ToDoList\ExceptionTodoL('The CakeMailTest TodoList Api requires version 5.4 or higher .');
-}
-use CakeMailTest\TodoList\controllerApi as controllerApi;	
+require_once __DIR__.'/config.php';
 
 function autoloadApi($class) {
 	
@@ -47,4 +43,3 @@ function autoloadApi($class) {
 }
 
 spl_autoload_register('autoloadApi');
-$API = new controllerApi();

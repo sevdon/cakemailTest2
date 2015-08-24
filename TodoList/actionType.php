@@ -6,7 +6,7 @@
  * Define all constantes for ACTIONTYPE field
  * 
  */
-
+namespace CakeMailTest\TodoList;
 abstract class actionType {
 	const CREATE_ACTION = 'CREATE';
 	const MODIFY_ACTION = 'MOD';

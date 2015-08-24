@@ -2,7 +2,8 @@
 /*
  * API CakeMailTest TodoList V1.0
  * Author : Severine Donnay
- * public class handleLists => manage list to create, delete, addItem, getItem, modifyItemValue 
+ * public class handleListsStorageDB => manage list with DB Mysql
+ * to create, delete, addItem, getItem, modifyItemValue 
  * 
  * @itemArr : defined in parent class : list of todoLists array
  *  
@@ -16,7 +17,7 @@
 
 namespace CakeMailTest\TodoList;
 
-class handleLists extends listObjects {
+final class handleListsStorageDB extends handleLists {
 
 	
 	
@@ -28,12 +29,16 @@ class handleLists extends listObjects {
 	
 	public function create($nameList) { 
 	
-		if (!$this->isNameExistInArray($nameList,'NOEXCEPTION')) { // There no list with this name 
-			$listTodo = new listTodo($nameList);
-			$this->listsArr[$nameList]=$listTodo;	
-		} else throw new ExceptionTodoList('Create handle error : duplicated list name');	
-		return true;
-	}
+		if (parent::create($nameList)) {
+			try {
+				$DB = new DataBase(DB_NAME,DB_USER,DB_PWD,DB_HOST);
+				$DB->prepareAndExecute("INSERT into lists (name,user_id) VALUES ('".DataBase::format_text_sql($nameList)."',".user::ID.")",'INSERT');
+			} catch (\PDOException $e)	{
+				throw new ExceptionToDoList ('Error DB to insert new list : '.$e->getMessage()); 
+			}
+		}
+		
+	} 
 	
 	public function modify($nameList, array $valuesArr) {
 		

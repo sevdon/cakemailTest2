@@ -8,6 +8,7 @@
 namespace CakeMailTest\TodoList;
 abstract class errorApi {
 	
+	const EMPTYREQUEST_ERR='Post values is empty';	
 	const EMPTYLOGIN_ERR='Login is missing';
 	const EMPTYPWD_ERR='Password is missing';
 	const EMPTYACTION_ERR='ActionType is missing';

@@ -14,16 +14,16 @@ abstract class listObjects {
 	protected $listsArr=array();
 	
     /*
-     * BOOL function isNameExistInArray(string $nameList) : return true if this nameList already exist in $listArr array
+     * BOOL function isNameExistInArray(string $nameList, string $flag) : return true if this nameList already exist in $listArr array
      * $nameList string : name of list
-     * throw an Exception 
+     * throw an Exception if flag is 'THROW_EXCEPTION'
      * 
      */
 	
 	
-	protected function isNameExistInArray($nameList) {
+	protected function isNameExistInArray($nameList,$flag='THROW_EXCEPTION') {
 		if (array_key_exists($nameList,$this->listsArr)) return true;
-		else throw new ExceptionTodoList('Error : name list not found');	
+		elseif ($flag=='THROW_EXCEPTION') throw new ExceptionTodoList('Error : name list not found');	
 	}
 	
 	
@@ -38,7 +38,7 @@ abstract class listObjects {
 	protected function arrayKeyExists($key,array $search) {
 		
 	if (array_key_exists($key, $search)) return true;
-	else throw new ExceptionTodoList('Error : field .'$key'. not found in array');
+	else throw new ExceptionTodoList('Error : field '.$key.' not found in array');
 			
 		
 	}

@@ -6,17 +6,17 @@
  * BOOL FormatCreate($request,$actionType)
  * 
  */
-
+namespace CakeMailTest\TodoList;
 abstract class validRequest {
 
 	static function checkFormat($request,$actionType) {
 		
-		if ($actionType==actionType::ADDITEM_ACTION) {
-			
+		
+		if ($actionType==actionType::CREATE_ACTION) {
 			return (array_key_exists('NAMELIST', $request)) ? true : false;
 		}
 		
-		
+		return false;
 		
 	}
 

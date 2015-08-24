@@ -11,10 +11,11 @@
  *  
  */
 
-define('DDB_HOST','localhost');
-define('DDB_USER','root');
-define('DDB_PWD','root');
-define('DDB_NAME','CakeMailTestTodoList');
+define('DB_HOST','localhost');
+define('DB_USER','root');
+define('DB_PWD','root');
+define('DB_NAME','CakeMailTestTodoList');
+define('METHOD_TYPE','GET');
 
 /*
  * Dirname for installation in custom directory 

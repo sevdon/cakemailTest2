@@ -5,7 +5,7 @@
  * 
  */
 namespace CakeMailTest\TodoList;
-public class request {
+final class request {
 	
 	private $requestArr =null;
 	private $actionType =null;
@@ -20,16 +20,16 @@ public class request {
 	function getReponse() {
 		
 		
-		if (!validRequest::createFormat($this->requestArr,$this->actionType)) {
-			echo errorApi::POSTFORMAT_ERR ;
-			exit;
-		}
-	    $this->handleLists = new handleLists();
-         switch ($requestArr['ACTIONTYPE']) {
+		if (!validRequest::checkFormat($this->requestArr,$this->actionType)) throw new ExceptionTodoList (errorApi::POSTFORMAT_ERR) ;
+
+	    $this->handleLists = new handleListsStorageDB(); // objet to manage ToLists and storage to DB
+         switch ($this->requestArr['ACTIONTYPE']) {
 				
 			case actionType::CREATE_ACTION : 
-				echo ($this->handleLists->create($requestArr['NAMELIST'])) ? response::MESSAGE_CREATE_SUCCESS ; response::MESSAGE_CREATE_FAIL;
+				$Response = $this->handleLists->create($this->requestArr['NAMELIST']);
+				echo ($Response==true) ? (responseMessage::MESSAGE_CREATE_SUCCESS) : (responseMessage::MESSAGE_CREATE_FAIL);
 				break;	
+         }		
 				
 	 }
 }

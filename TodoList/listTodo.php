@@ -10,7 +10,7 @@
 
 namespace CakeMailTest\TodoList;
 
-public class listTodo extends listObjects {
+class listTodo extends listObjects {
 	
 	private $nameList = null;
 	protected $itemArr=array();
