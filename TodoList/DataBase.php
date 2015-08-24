@@ -152,7 +152,6 @@ final class DataBase {
 		} catch (\PDOException $e) {
 				die('Query error on <br/> : '.$e->getMessage());
 			}	
-		return $this->prep->fetchAll;
 		
 	}
 	

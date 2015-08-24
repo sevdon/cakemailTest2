@@ -36,7 +36,9 @@ final class handleListsStorageDB extends handleLists {
 			} catch (\PDOException $e)	{
 				throw new ExceptionToDoList ('Error DB to insert new list : '.$e->getMessage()); 
 			}
-		}
+			return true;
+		} 
+		return false;
 		
 	} 
 	
