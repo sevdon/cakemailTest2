@@ -1,24 +1,28 @@
 <?php
-/* public class item 
- * @content String : description of the todo thing
- * @status Char : statut of item 
+/* API CakeMailTest TodoList V1.0
+ * public class item 
+ * @content String : description of task to todo 
+ * @status Char : status of item 
  */
-
 namespace CakeMailTest\TodoList;
 
-final public class item {
+public class item {
 	
-	$content = null;
-	$statut = null;
+	public $content = null;
+	public $status = null;
 	
-	public function __construct($content) {
+	function __construct($content) {
 		$this->content = $content;
-		$this->statut = $content;
+		$this->status = statusItem::DEFAULT_STATUS;
 	}
 	
-	public function change_statut($statut) {
+	public function set_status($status) {
 		
-		$this->statut = $statut;
+		$this->status = $status;
+	}
+	
+	public function get_status() {
+		return $this->status;
 	}
 	
 }

@@ -1,11 +1,12 @@
 <?php
 /**
+ * API CakeMailTest TodoList V1.0
+ * Author : Severine Donnay
  * static class User 
  * for only one user with static login and password
  * implements here for evolution of API with multi-user authentification and storage in DDB
  * 
  */
-
 namespace CakeMailTest\TodoList;
 
 class user {
