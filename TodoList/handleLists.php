@@ -63,7 +63,6 @@ class handleLists extends listObjects {
 	
 	public function addItem($nameList,array $itemsArr) { 
 		
-			echo 'on ajouter addItem';
 			if (parent::arrayKeyExists('CONTENT', $itemsArr)) {	
 				return $this->getObject($nameList)->addItem($itemsArr);
 			}	

@@ -12,9 +12,13 @@ abstract class validRequest {
 	static function checkFormat($request,$actionType) {
 		
 		
-		if ($actionType==actionType::CREATE_ACTION) return (array_key_exists('NAMELIST', $request)) ? true : false;
+		if ($actionType==actionType::CREATE_ACTION || $actionType==actionType::DELETE_ACTION) return (array_key_exists('NAMELIST', $request)) ? true : false;
 	    if ($actionType==actionType::ADDITEM_ACTION) {
 	    	$keysRequired=array('NAMELIST','CONTENT','STATUS');
+	    	return (self::array_all_keys_exist($keysRequired,$request)) ? true : false;
+	    }
+		if ($actionType==actionType::MODIFY_ACTION) {
+	    	$keysRequired=array('NAMELIST','NEWNAMELIST');
 	    	return (self::array_all_keys_exist($keysRequired,$request)) ? true : false;
 	    }
 		

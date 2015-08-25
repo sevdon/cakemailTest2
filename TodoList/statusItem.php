@@ -18,7 +18,7 @@ abstract class statusItem {
 	 * STATUS DONE 
 	 */
 	
-	const DONE_STATUS='DONE'
+	const DONE_STATUS='DONE';
 	
 }
 

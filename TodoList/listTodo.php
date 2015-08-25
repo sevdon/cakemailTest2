@@ -54,8 +54,8 @@ class listTodo extends listObjects {
 	public function getItem(array $filter) {
 
 		if ($filter=='') return $this->itemArr;
-		elseif (arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_STATUS) return array_filter($this->itemArr,'self::filter_status_default');
-		elseif (arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_DONE) return array_filter($this->itemArr,'self::filter_status_done');
+		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_STATUS) return array_filter($this->itemArr,'self::filter_status_default');
+		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_DONE) return array_filter($this->itemArr,'self::filter_status_done');
 		else throw new ExceptionTodoList('Error : filters for getitems not defined');
 		
 	}
@@ -68,10 +68,11 @@ class listTodo extends listObjects {
 	 */
 	
 	public function addItem($itemsArr) {
-		
-		 if (arrayKeyExists('CONTENT', $itemsArr)) {
-		 	$this->itemArr['CONTENT']=new item($itemsArr['CONTENT']);	
-		 	return true;	
+		 
+		if (parent::arrayKeyExists('CONTENT', $itemsArr)) {
+			$args = array_values($itemsArr);
+		 	$this->itemArr['CONTENT']=new item($args);	
+		 	return $this->itemArr['CONTENT'];	
 		 }
 	}
 	
@@ -83,17 +84,13 @@ class listTodo extends listObjects {
 	 */
 	
 	public function delItem($filters) {
-		if (arrayKeyExists('CONTENT', $filter)) {
+		if (parent::arrayKeyExists('CONTENT', $filter)) {
 			
 			unset($this->itemArr[$filter['CONTENT']]);
-		} elseif (arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_STATUS) $this->itemArr = array_filter($this->itemArr,'self::filter_status_done');
-		elseif (arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_DONE) $this->itemArr = array_filter($this->itemArr,'self::filter_status_default');
+		} elseif (parent::arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_STATUS) $this->itemArr = array_filter($this->itemArr,'self::filter_status_done');
+		elseif (parent::arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_DONE) $this->itemArr = array_filter($this->itemArr,'self::filter_status_default');
 	}
-	
-	
-	
-	
-	
+		
 	
 }
 

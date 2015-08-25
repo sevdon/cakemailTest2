@@ -21,30 +21,6 @@ final class handleListsStorageDB extends handleLists {
 
 	private $DB = null;
 	
-	/*
-	 * static function generate_lists(Array $listArr) 
-	 * This method is not optimized 
-	 * Using 2 loop is not the best solution 
-	 * To next version of API : check for better solution by remplacing fo & while loops by manipulate array functions with filters and a new function add_items to add multiple items 
-	 * 
-	 * 
-	 */
-	
-	protected function generate_lists($listArr) {
-		
-		for ($i=0;$i<$listArr[0]['count_row'];$i++) {
-			
-			$nameList = $listArr[$i]['name'];
-			parent::create($nameList);
-			$id = $listArr[$i]['id'];			
-			while ($id == $listArr[$i]['id']) {
-				if ($listArr[$i]['content']!='') parent::addItem($nameList,array ('CONTENT'=>$listArr[$i]['content'],'STATUS'=>$listArr[$i]['status']));
-				$i++;
-				if ($i>=$listArr[0]['count_row']) break;
-			}
-		}
-	}
-	
 	
 	/*
 	 * function create => to create a new Todolist with a specific name to be identified
@@ -56,31 +32,40 @@ final class handleListsStorageDB extends handleLists {
 		
 		try {
 			$this->DB = new DataBase(DB_NAME,DB_USER,DB_PWD,DB_HOST);
-			$sql = "SELECT lists.name,lists.id,'' AS content,'' AS status FROM lists WHERE lists.id NOT IN (select items.list_id from items) 
-				    UNION SELECT lists.name,lists.id,items.content,items.status FROM lists,items WHERE lists.id = items.list_id";
-			$listArr = $this->DB->query_select($sql); 
+			
 		} catch (\PDOException $e)	{
 				throw new ExceptionToDoList ('Error DB to connect : '.$e->getMessage()); 
 		} 
-		
-		$this->generate_lists($listArr);
+			
 	}
 	
 	
 	public function create($nameList) { 
-
+		
 	    if ($nameList=='') throw new ExceptionToDoList ('Error create new list : Namelist is empty'); 
-		if (parent::create($nameList)) {
-			try {
-				$this->DB->prepareAndExecute("INSERT into lists (name,user_id) VALUES ('".DataBase::format_text_sql($nameList)."',".user::ID.")",'INSERT');
-			} catch (\PDOException $e)	{
-				throw new ExceptionToDoList ('Error DB to insert new list : '.$e->getMessage()); 
-			}
-			return true;
-		} 
-		return false;
+		if (self::list_existInDB($nameList)) throw new ExceptionToDoList ('Error create : a list with a same name '.$nameList.' already exist'); 
+		try {
+			$this->DB->prepareAndExecute("INSERT into lists (name,user_id) VALUES ('".DataBase::format_text_sql($nameList)."',".user::ID.")",'INSERT');
+		} catch (\PDOException $e)	{
+			throw new ExceptionToDoList ('Error DB to insert new list : '.$e->getMessage()); 
+		}
+		return responseMessage::MESSAGE_CREATE_SUCCESS;
 		
 	} 
+	
+	function modifyLst ($nameList,$newNameList) {
+		if ($nameList=='' || $newNameList=='') throw new ExceptionToDoList ('Error modify name list : Namelist is empty'); 
+		if (!self::list_existInDB($nameList)) throw new ExceptionToDoList ('Error modify : no listname '.$nameList.' found');
+		if (self::list_existInDB($newNameList)) throw new ExceptionToDoList ('Error modify : the new listname '.$nameList.' already exist'); 
+		
+		try {
+			$this->DB->prepareAndExecute("UPDATE lists SET name='".DataBase::format_text_sql($newNameList)."' WHERE name='".DataBase::format_text_sql($nameList)."' ",'UPDATE');
+		} catch (\PDOException $e)	{
+			throw new ExceptionToDoList ('Error DB to update listName : '.$e->getMessage()); 
+		}
+		return responseMessage::MESSAGE_MODIFY_SUCCESS;
+		
+	}
 	
 	/*
 	public function modify($nameList, array $valuesArr) {
@@ -96,13 +81,17 @@ final class handleListsStorageDB extends handleLists {
 	 * 
 	 */
 	
-	/*
+	
 	public function delete($nameList) {
-		$this->getObject($nameList)->__destruct();
-		unset($this->listsArr[$nameList]); 
-		
+		if ($nameList=='') throw new ExceptionToDoList ('Error delete list : Namelist is empty'); 
+		if (!self::list_existInDB($nameList)) throw new ExceptionToDoList ('Error delete : no listname '.$nameList.' found'); 
+		try {
+			$this->DB->prepareAndExecute("DELETE from lists WHERE name = '".DataBase::format_text_sql($nameList)."'",'DELETE'); // items are deleted by Trigger on DB
+		} catch (\PDOException $e)	{
+			throw new ExceptionToDoList ('Error DB to delete list : '.$e->getMessage()); 
+		}
+		return responseMessage::MESSAGE_DEL_SUCCESS;
 	}
-	*/
 	
 	/*
 	 * function addItem => to add a new item in a specific list
@@ -113,11 +102,17 @@ final class handleListsStorageDB extends handleLists {
 	
 	
 	public function addItem($nameList,array $itemsArr) { 
-		
-			if (parent::addItem($nameList,$itemsArr)) {
-				return true;
-			}	
-		}
+			
+		$list_id=self::get_listItems_fromDB($nameList);
+		$item = parent::addItem($nameList,$itemsArr);
+			try {
+				$this->DB->prepareAndExecute("INSERT into items (content,list_id,status) VALUES ('".DataBase::format_text_sql($item->content)."',$list_id,'".DataBase::format_text_sql($item->status)."')",'INSERT');
+			} catch (\PDOException $e)	{
+				throw new ExceptionToDoList ('Error DB to insert new list : '.$e->getMessage()); 
+			}
+			return true;
+		}	
+	
 		
 	/*
 	 * function getItem => to get an array with all items filtered by filters if defined
@@ -143,7 +138,68 @@ final class handleListsStorageDB extends handleLists {
 	public function delItem($nameList,$filters) {
 		 return $this->getObject($nameList)->delItem($filters);	
 	}
+	
+	
+	/*
+	 * BOOL function list_existInDB( string $nameList) 
+	 * Check if a lisf with namelist already exist in DB 
+	 * return a BOOL
+	 */
 		
+	
+	private function list_existInDB($nameList) {
+		
+		$listArr = $this->DB->query_select("SELECT lists.id FROM lists WHERE name='".DataBase::format_text_sql($nameList)."' order by id DESC limit 0,1"); 
+		if ($listArr[0]['count_row']==0) return false;
+		else return true;
+		
+	}
+	
+	/*
+	 * function generate_lists_fromDB() 
+	 * Generate all lists object from DB records 
+	 * 
+	 */
+	
+	private function generate_lists_fromDB() {
+		
+		try {
+			$listArr = $this->DB->query_select("SELECT lists.name FROM lists"); 
+		} catch (\PDOException $e)	{
+			throw new ExceptionToDoList ('Error DB to connect : '.$e->getMessage()); 
+		} 
+		for ($i=0;$i<$listArr[0]['count_row'];$i++) parent::create($listArr[$i]['name']);
+	}
+	
+	/*
+	 * function generate_list_fromDB(string $nameList) 
+	 * Generate  one object list defined by listname from DB record
+	 * Return id in DB for this list
+	 */
+	
+	private function generate_list_fromDB($nameList) {
+		
+		try {
+			$listArr = $this->DB->query_select("SELECT lists.id FROM lists WHERE name='".DataBase::format_text_sql($nameList)."' order by id DESC limit 0,1"); 
+			if ($listArr[0]['count_row']==0) throw new ExceptionToDoList ('Error : name list not found');
+		} catch (\PDOException $e)	{
+			throw new ExceptionToDoList ('Error DB to connect : '.$e->getMessage()); 
+		}
+		return  array([$listArr[0]['id']]=>parent::create($nameList));	
+	}
+	
+	/*
+	 * BOOL function generate_lstitems_fromDB(int $list_id) 
+	 * @list_id int : id list in DB
+	 * Generate  all items object in this list from DB records
+	 * Return BOOL
+	 */
+	
+	
+	private function generate_lstitems_fromDB($list_id) {
+		
+		
+	}
 }
 
 ?>
