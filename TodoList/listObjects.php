@@ -11,7 +11,7 @@ namespace CakeMailTest\TodoList;
 
 abstract class listObjects {
 		
-	protected $listsArr=array();
+	public $listsArr=array();
 	
     /*
      * BOOL function isNameExistInArray(string $nameList, string $flag) : return true if this nameList already exist in $listArr array

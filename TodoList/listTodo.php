@@ -12,8 +12,8 @@ namespace CakeMailTest\TodoList;
 
 class listTodo extends listObjects {
 	
-	private $nameList = null;
-	protected $itemArr=array();
+	public $id_list = null;
+	public $nameList = null;
 	
 	public function __construct($nameList) {
 		$this->nameList=$nameList;
@@ -53,27 +53,26 @@ class listTodo extends listObjects {
 	
 	public function getItem(array $filter) {
 
-		if ($filter=='') return $this->itemArr;
-		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_STATUS) return array_filter($this->itemArr,'self::filter_status_default');
-		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_DONE) return array_filter($this->itemArr,'self::filter_status_done');
+		if ($filter=='') return $this->listsArr;
+		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_STATUS) return array_filter($this->listsArr,'self::filter_status_default');
+		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_DONE) return array_filter($this->listsArr,'self::filter_status_done');
 		else throw new ExceptionTodoList('Error : filters for getitems not defined');
 		
 	}
 
 	/*
-	 * function addItem => add item in list 
-	 * return BOOL 
-	 * @itemArr : array with contents for items - ex : array('content'=>'Buy a new car') 
+	 * function addItem => add item in list  
+	 * @itemArr : array with contents for items - ex : array('content'=>'Buy a new car','status'=>'DONE'....all new Fields) 
 	 * 
 	 */
 	
 	public function addItem($itemsArr) {
-		 
-		if (parent::arrayKeyExists('CONTENT', $itemsArr)) {
+
 			$args = array_values($itemsArr);
-		 	$this->itemArr['CONTENT']=new item($args);	
-		 	return $this->itemArr['CONTENT'];	
-		 }
+			$refItem = new \ReflectionClass('CakeMailTest\TodoList\item');
+			$item = $refItem->newInstanceArgs($args);
+		 	array_push($this->listsArr, $item);
+		 	return $item;		
 	}
 	
 	/*
@@ -86,9 +85,9 @@ class listTodo extends listObjects {
 	public function delItem($filters) {
 		if (parent::arrayKeyExists('CONTENT', $filter)) {
 			
-			unset($this->itemArr[$filter['CONTENT']]);
-		} elseif (parent::arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_STATUS) $this->itemArr = array_filter($this->itemArr,'self::filter_status_done');
-		elseif (parent::arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_DONE) $this->itemArr = array_filter($this->itemArr,'self::filter_status_default');
+			unset($this->listsArr[$filter['CONTENT']]);
+		} elseif (parent::arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_STATUS) $this->listsArr = array_filter($this->listsArr,'self::filter_status_done');
+		elseif (parent::arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_DONE) $this->listsArr = array_filter($this->listsArr,'self::filter_status_default');
 	}
 		
 	

@@ -13,7 +13,7 @@ class item {
 	
 	function __construct($content,$status=statusItem::DEFAULT_STATUS) {
 		$this->content = $content;
-		$this->status = $status;
+		$this->status = $status;	
 	}
 	
 	public function set_status($status) {

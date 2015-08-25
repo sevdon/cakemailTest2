@@ -15,8 +15,7 @@ abstract class responseMessage {
 	const MESSAGE_ADDITEM_SUCCESS='New item was added successfully';
 	const MESSAGE_MODIFYITEM_SUCCESS='Item was modified successfully';
 	const MESSAGE_DELITEM_SUCCESS='Item was deleted successfully';	
-	
-	
+		
 } 
 
 ?>

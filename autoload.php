@@ -35,7 +35,7 @@ function autoloadApi($class) {
     *  separators with directory separators in the relative class name, append  with .php
     */
     $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
-    echo $file.'<br/>';
+    if (DEBBUGAGE_MODE) echo $file.'<br/>';
 
     // if the file exists, require it
     if (file_exists($file)) require $file;

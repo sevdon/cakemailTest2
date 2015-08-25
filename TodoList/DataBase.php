@@ -13,7 +13,7 @@ final class DataBase {
  	private $dsn=null;
 	private $pdo = null;
 	private $typeBDD='MYSQL';
-	public $debugg_affiche = true;
+	public $debugg_affiche = DEBBUGAGE_MODE;
 	protected $prep=null;
 	private $check_injection_sql = false;
 	
@@ -195,6 +195,15 @@ final class DataBase {
 			} elseif ($flag=='ONE_ELEM') return true;
 		}
 		return ($flag=='ALL_ELEM') ? true : false;
+	}
+	
+	static function generate_filter_sql($filters) {
+		
+		$sql_filter = '';
+		foreach ($filters as $key=>$value) {
+			$sql_filter.= ' AND '.$key.' = \''.$value.'\' ';
+		}
+		return $sql_filter;
 	}
 			
 	

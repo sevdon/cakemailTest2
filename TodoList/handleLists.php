@@ -22,22 +22,22 @@ class handleLists extends listObjects {
 	/*
 	 * function create => to create a new Todolist with a specific name to be identified
 	 * @var nameList = String => name of the list 
-	 * 
+	 * return new listTodo Object
 	 */
 	
 	public function create($nameList) { 
 	
 		if (!$this->isNameExistInArray($nameList,'NOEXCEPTION')) { // There no list with this name 
 			$listTodo = new listTodo($nameList);
-			$this->listsArr[$nameList]=$listTodo;	
+			$this->listsArr[$nameList]=$listTodo; // storage listTodo in Associatif Array with key=namelist 	
 		} else throw new ExceptionTodoList('Create handle error : duplicated list name');	
-		return true;
+		return $listTodo; // return listTodo Object
 	}
 	
 	
 	public function modify($nameList, array $valuesArr) {
 		
-		if (parent::arrayKeyExists('NAMELIST', $valuesArr)) parent::modify($this->getObject($nameList),$valuesArr);
+		 parent::modify($this->getObject($nameList),$valuesArr);
 		
 	}
 	
@@ -56,17 +56,15 @@ class handleLists extends listObjects {
 	/*
 	 * function addItem => to add a new item in a specific list
 	 * @var nameList = String => name of the list to add item
-	 * @ itemArr = Array => contain item values (content and status) - Ex : Array ('content'=> 'task name to do','status'=>'TODO')
-	 * return a BOOL
+	 * @ itemArr = Array => contain item values (content and status) - Ex : Array ('content'=> 'task name to do','status'=>'TODO'...etc all items properties)
 	 */
 	
 	
 	public function addItem($nameList,array $itemsArr) { 
 		
-			if (parent::arrayKeyExists('CONTENT', $itemsArr)) {	
-				return $this->getObject($nameList)->addItem($itemsArr);
-			}	
-		}
+		return call_user_func_array(array($this->getObject($nameList),addItem),$itemsArr);
+		
+	}
 		
 	/*
 	 * function getItem => to get an array with all items filtered by filters if defined
