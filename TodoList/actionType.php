@@ -11,11 +11,10 @@ abstract class actionType {
 	const CREATE_ACTION = 'CREATE';
 	const MODIFY_ACTION = 'MOD';
 	const DELETE_ACTION = 'DEL';
-	const GETLIST_ACTION = 'GETLIST';
 	const ADDITEM_ACTION = 'ADDITEM';
-	const MODIFYITEM_ACTION = 'MODITEM';
 	const DELETEITEM_ACTION = 'DELITEM';
-	
+	const GETLIST_ACTION = 'GETLIST';
+	const MODIFYITEM_ACTION = 'MODITEM';
 }
 
 ?>

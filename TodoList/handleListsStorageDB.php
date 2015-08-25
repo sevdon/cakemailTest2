@@ -77,7 +77,7 @@ final class handleListsStorageDB extends handleLists {
 	 * function addItem => to add a new item in a specific list
 	 * @var nameList = String => name of the list to add item
 	 * @ itemArr = Array => contain item values (content and status) - Ex : Array ('content'=> 'task name to do','status'=>'TODO')
-	 * return a BOOL
+	 * return message
 	 */
 	
 	
@@ -98,20 +98,26 @@ final class handleListsStorageDB extends handleLists {
 	 */
 	
 	public function getItem($nameList,$filters='') {
-		
-		 return $this->getObject($nameList)->getItem($filters);
+		 list($list_id,$lstTodo) = self::generate_listItem_fromDB($nameList,$filters);
+		 var_dump($lstTodo);
+		 return $lstTodo;
 	} 
 	
 	/*
 	 * BOOL function delItem => to del items in list defined by filters
 	 * @var nameList = String => name of the list to delete items
 	 * @var filters => Array of filters to delete ex : array ('content'=>'buy a car') OR ('status'=>'TODO')
+	 * return message
 	 * 
-	 * return an Array of item objects
+	 * 
 	 */
 	
 	public function delItem($nameList,$filters) {
-		 return $this->getObject($nameList)->delItem($filters);	
+		 list($list_id,$lstTodo) = self::generate_listItem_fromDB($nameList,$filters);
+		 $lstTodo->deleteAllItem();
+		 $filters_sql = DataBase::generate_filter_sql($filters);	
+		 $this->DB->prepareAndExecute("DELETE FROM items WHERE list_id=$list_id  $filters_sql",'DELETE');
+		 return responseMessage::MESSAGE_DELITEM_SUCCESS;
 	}
 	
 	

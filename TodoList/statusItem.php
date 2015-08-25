@@ -12,13 +12,13 @@ abstract class statusItem {
 	/*
 	 * DEFAULT STATUS 
 	 */
-	const DEFAULT_STATUS='TODO';
+	const DEFAULT_STATUS='DEFAULT_STATUS';
 	
 	/*
 	 * STATUS DONE 
 	 */
 	
-	const DONE_STATUS='DONE';
+	const DONE_STATUS='DONE_STATUS';
 	
 }
 

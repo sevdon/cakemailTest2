@@ -12,7 +12,6 @@ namespace CakeMailTest\TodoList;
 
 class listTodo extends listObjects {
 	
-	public $id_list = null;
 	public $nameList = null;
 	
 	public function __construct($nameList) {
@@ -56,7 +55,7 @@ class listTodo extends listObjects {
 		if ($filter=='') return $this->listsArr;
 		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_STATUS) return array_filter($this->listsArr,'self::filter_status_default');
 		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_DONE) return array_filter($this->listsArr,'self::filter_status_done');
-		else throw new ExceptionTodoList('Error : filters for getitems not defined');
+		else throw new ExceptionTodoList('Error : filters no defined');
 		
 	}
 
@@ -76,18 +75,15 @@ class listTodo extends listObjects {
 	}
 	
 	/*
-	 * function delItem => delete items in list 
-	 * return BOOL 
-	 * @itemArr : array with contents for items - ex : array('content'=>'Buy a new car') 
+	 * function deleteAllItem => delete all items in list  
 	 * 
 	 */
 	
-	public function delItem($filters) {
-		if (parent::arrayKeyExists('CONTENT', $filter)) {
-			
-			unset($this->listsArr[$filter['CONTENT']]);
-		} elseif (parent::arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_STATUS) $this->listsArr = array_filter($this->listsArr,'self::filter_status_done');
-		elseif (parent::arrayKeyExists('STATUS', $filter) && $filter['STATUS']==statusItem::DEFAULT_DONE) $this->listsArr = array_filter($this->listsArr,'self::filter_status_default');
+	public function deleteAllItem() {
+		
+		foreach ($this->listsArr as $item) $item->__destruct();
+		$this->listsArr = array();
+		
 	}
 		
 	

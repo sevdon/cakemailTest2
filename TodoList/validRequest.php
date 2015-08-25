@@ -11,19 +11,23 @@ abstract class validRequest {
 
 	static function checkFormat($request,$actionType) {
 		
-		
 		if ($actionType==actionType::CREATE_ACTION || $actionType==actionType::DELETE_ACTION) return (array_key_exists('NAMELIST', $request)) ? true : false;
 	    if ($actionType==actionType::ADDITEM_ACTION) {
 	    	$keysRequired=array('NAMELIST','CONTENT','STATUS');
+	    	if (!defined('CakeMailTest\TodoList\statusItem::'.$request['STATUS'])) throw new ExceptionToDoList ('This Status is not defined');
 	    	return (self::array_all_keys_exist($keysRequired,$request)) ? true : false;
 	    }
 		if ($actionType==actionType::MODIFY_ACTION) {
 	    	$keysRequired=array('NAMELIST','NEWNAMELIST');
 	    	return (self::array_all_keys_exist($keysRequired,$request)) ? true : false;
 	    }
-		
+		if ($actionType==actionType::DELETEITEM_ACTION) {
+	    	$keysRequired1=array('NAMELIST','CONTENT');
+	    	$keysRequired2=array('NAMELIST','STATUS');
+	    	if (isset($request['STATUS']) && !defined('CakeMailTest\TodoList\statusItem::'.$request['STATUS'])) throw new ExceptionToDoList ('This Status is not defined');
+	    	return (self::array_all_keys_exist($keysRequired1,$request) || self::array_all_keys_exist($keysRequired2,$request)) ? true : false;
+	    }
 		return false;
-		
 	}
 	
 	static function mandatoryField($requestArr) {

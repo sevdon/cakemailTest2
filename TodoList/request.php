@@ -5,7 +5,7 @@
  * POST VALUES ARE : [ACTIONTYPE] and FIELDS required for Actiontype
  * Actiontype is Type of Request : all types are defined in actionType class
  * 
- * [ACTIONTYPE] = CREATE_ACTION | MODIFY_ACTION | DELETE_ACTION | ADDITEM_ACTION | 
+ * [ACTIONTYPE] = CREATE_ACTION | MODIFY_ACTION | DELETE_ACTION | ADDITEM_ACTION | DELETEITEM_ACTION | GETLIST_ACTION | MODIFYITEM_ACTION
  * 
  * 
  */
@@ -42,7 +42,7 @@ final class request {
 			case actionType::MODIFY_ACTION : // modify listname : 'NAMELIST','NEWNAMELIST' are required fields
 				$func_name='modifyLst';
 				$argsArr=array_intersect_key($this->requestArr, array_flip(array('NAMELIST','NEWNAMELIST')));
-				ksort($argsArr); // args order by alphaNum : NAMELIST, NEWNAMELIST
+				ksort($argsArr); // args order by alphaNum : NAMELIST, NEWNAMELIST :: same order than arguments in modifyLst function
 				$args = array_values($argsArr); 
 				break;	
 				
@@ -55,9 +55,17 @@ final class request {
 			case actionType::ADDITEM_ACTION : // add new item to listname : 'NAMELIST','CONTENT','STATUS' is required field 
 				$func_name='addItem';
 				$argsArr = array_intersect_key($this->requestArr, array_flip(array('CONTENT','STATUS')));
-				ksort($argsArr); // args by alphaNum : CONTENT, STATUS
+				ksort($argsArr); // args by alphaNum : CONTENT, STATUS :: same order than item properties object
 				$args = array($this->requestArr['NAMELIST'],$argsArr);
 				break;	
+				
+			case actionType::DELETEITEM_ACTION : // delete items to listname : 'NAMELIST','CONTENT' OR 'STATUS' are required field :: Delete all items with the speciic CONTENT or specific STATUS in list ( several items can have same name)
+				$func_name='delItem';
+				$argsArr = array_intersect_key($this->requestArr, array_flip(array('CONTENT','STATUS')));
+				ksort($argsArr); // args by alphaNum : CONTENT, STATUS :: same order than item properties object
+				$args = array($this->requestArr['NAMELIST'],$argsArr);
+				break;	
+				
          }		
 
       
