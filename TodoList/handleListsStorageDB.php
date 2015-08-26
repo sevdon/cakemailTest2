@@ -99,7 +99,6 @@ final class handleListsStorageDB extends handleLists {
 	
 	public function getItem($nameList,$filters='') {
 		 list($list_id,$lstTodo) = self::generate_listItem_fromDB($nameList,$filters);
-		 var_dump($lstTodo);
 		 return $lstTodo;
 	} 
 	
@@ -108,7 +107,6 @@ final class handleListsStorageDB extends handleLists {
 	 * @var nameList = String => name of the list to delete items
 	 * @var filters => Array of filters to delete ex : array ('content'=>'buy a car') OR ('status'=>'TODO')
 	 * return message
-	 * 
 	 * 
 	 */
 	

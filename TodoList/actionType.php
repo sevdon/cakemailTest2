@@ -13,7 +13,7 @@ abstract class actionType {
 	const DELETE_ACTION = 'DEL';
 	const ADDITEM_ACTION = 'ADDITEM';
 	const DELETEITEM_ACTION = 'DELITEM';
-	const GETLIST_ACTION = 'GETLIST';
+	const GETLIST_ACTION = 'GETLISTITEM';
 	const MODIFYITEM_ACTION = 'MODITEM';
 }
 

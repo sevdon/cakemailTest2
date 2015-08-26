@@ -26,7 +26,7 @@ define('METHOD_TYPE','GET');
  * 
  */
 
-define('DEBBUGAGE_MODE',true);
+define('DEBBUGAGE_MODE',false);
 
 /*
  * Dirname for installation in custom directory 

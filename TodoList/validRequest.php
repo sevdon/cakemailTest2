@@ -27,6 +27,12 @@ abstract class validRequest {
 	    	if (isset($request['STATUS']) && !defined('CakeMailTest\TodoList\statusItem::'.$request['STATUS'])) throw new ExceptionToDoList ('This Status is not defined');
 	    	return (self::array_all_keys_exist($keysRequired1,$request) || self::array_all_keys_exist($keysRequired2,$request)) ? true : false;
 	    }
+		if ($actionType==actionType::GETLIST_ACTION) {
+	    	$keysRequired1=array('NAMELIST');
+	    	$keysRequired2=array('NAMELIST','STATUS');
+	    	if (isset($request['STATUS']) && !defined('CakeMailTest\TodoList\statusItem::'.$request['STATUS'])) throw new ExceptionToDoList ('This Status is not defined');
+	    	return (self::array_all_keys_exist($keysRequired1,$request) || self::array_all_keys_exist($keysRequired2,$request)) ? true : false;
+	    }
 		return false;
 	}
 	

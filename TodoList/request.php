@@ -15,11 +15,12 @@ final class request {
 	private $requestArr =null;
 	private $actionType =null;
 	private $handleLists;
-	private $responseType = 'text/html'; 
+	private $type_content = 'text/html'; 
 	
 	public function __construct($requestArr,$actionType) {
 		$this->requestArr = $requestArr;
 		$this->actionType = $actionType;
+		
 	}
 	
 	public function getResponse() {
@@ -64,14 +65,18 @@ final class request {
 				$argsArr = array_intersect_key($this->requestArr, array_flip(array('CONTENT','STATUS')));
 				ksort($argsArr); // args by alphaNum : CONTENT, STATUS :: same order than item properties object
 				$args = array($this->requestArr['NAMELIST'],$argsArr);
-				break;	
-				
+				break;
+			case actionType::GETLIST_ACTION : // delete items to listname : 'NAMELIST','CONTENT' OR 'STATUS' are required field :: Delete all items with the speciic CONTENT or specific STATUS in list ( several items can have same name)
+				$func_name='getItem';
+				$args = array($this->requestArr['NAMELIST'],array_intersect_key($this->requestArr, array_flip(array('STATUS'))));
+				$this->type_content='text/xml';
+				break;			
          }		
 
       
          if (DEBBUGAGE_MODE) var_dump($args);
          $method = array ($this->handleLists,$func_name); //  method with args to manage request
-       	 return self::sendResponse(call_user_func_array($method,$args),$this->responseType); // call this method and receive return response
+       	 return self::sendResponse(call_user_func_array($method,$args),$this->type_content); // call this method and receive return response
 	}
 
 	 
@@ -84,11 +89,8 @@ final class request {
 	 
 	 private function sendResponse($content,$responseType) { 
 	 	
-	 	if (!is_array($content) && $responseType=='text/html') return $content; // this API return simple content for all action except for getList action
-	 	else { // only for GETLIST action to return XML file
-	 		$Response = new response($content,$responseType);
-	 		return $Response->send();
-	 	}
+	 	$Response = new response($content,$responseType);
+	 	return $Response->send();
 	 	
 	 } 
 	 
