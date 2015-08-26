@@ -19,7 +19,7 @@ define('DB_NAME','CakeMailTestTodoList');
  * Request MODE GET | POST
  */
 
-define('METHOD_TYPE','GET');
+define('METHOD_TYPE','POST');
 
 /*
  * DEBBUAGE_MODE TRUE | FALSE
