@@ -74,17 +74,7 @@ class listTodo extends listObjects {
 		 	return $item;		
 	}
 	
-	/*
-	 * function deleteAllItem => delete all items in list  
-	 * 
-	 */
-	
-	public function deleteAllItem() {
-		
-		foreach ($this->listsArr as $item) $item->__destruct();
-		$this->listsArr = array();
-		
-	}
+
 		
 	
 }

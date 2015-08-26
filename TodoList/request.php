@@ -6,8 +6,7 @@
  * Actiontype is Type of Request : all types are defined in actionType class
  * 
  * [ACTIONTYPE] = CREATE_ACTION | MODIFY_ACTION | DELETE_ACTION | ADDITEM_ACTION | DELETEITEM_ACTION | GETLIST_ACTION | MODIFYITEM_ACTION
- * 
- * 
+ *  
  */
 namespace CakeMailTest\TodoList;
 final class request {
@@ -51,7 +50,6 @@ final class request {
 				$func_name='delete';
 				$args = array_values(array_intersect_key($this->requestArr, array_flip(array('NAMELIST')))); 
 				break;
-			
 				
 			case actionType::ADDITEM_ACTION : // add new item to listname : 'NAMELIST','CONTENT','STATUS' is required field 
 				$func_name='addItem';
@@ -70,22 +68,20 @@ final class request {
 				$func_name='getItem';
 				$args = array($this->requestArr['NAMELIST'],array_intersect_key($this->requestArr, array_flip(array('STATUS'))));
 				$this->type_content='text/xml';
-				break;			
+				break;	
+			case actionType::MODIFYITEM_ACTION : // modify items to listname : 'NAMELIST','CONTENT', 'STATUS' are required field
+				$func_name='modify';
+				$argsArr = array_intersect_key($this->requestArr, array_flip(array('CONTENT','STATUS','OLDCONTENT')));
+				ksort($argsArr); // args by alphaNum : CONTENT, STATUS :: same order than item properties object
+				$args = array($this->requestArr['NAMELIST'],$argsArr);
+				break;				
          }		
 
-      
          if (DEBBUGAGE_MODE) var_dump($args);
          $method = array ($this->handleLists,$func_name); //  method with args to manage request
        	 return self::sendResponse(call_user_func_array($method,$args),$this->type_content); // call this method and receive return response
 	}
 
-	 
-	 /*
-	  * function sendResponse($content,$responseType)
-	  * $content string or array
-	  * if content is array -> use response object to send response (for XML return)
-	  * 
-	  */
 	 
 	 private function sendResponse($content,$responseType) { 
 	 	

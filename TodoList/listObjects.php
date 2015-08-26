@@ -13,6 +13,24 @@ abstract class listObjects {
 		
 	public $listsArr=array();
 	
+	
+	
+	/*
+	 * function create => to create a new Todolist with a specific name to be identified
+	 * @var nameList = String => name of the list 
+	 * return new listTodo Object
+	 */
+	
+	public function create($nameList) { 
+	
+		if (!$this->isNameExistInArray($nameList,'NOEXCEPTION')) { // There no list with this name 
+			$listTodo = new listTodo($nameList);		 	
+		} else throw new ExceptionTodoList('Create handle error : duplicated list name');	
+		return $listTodo; // return listTodo Object
+	}
+	
+	
+	
     /*
      * BOOL function isNameExistInArray(string $nameList, string $flag) : return true if this nameList already exist in $listArr array
      * $nameList string : name of list

@@ -7,31 +7,32 @@
  * 
  * @itemArr : defined in parent class : list of todoLists array
  *  
- *  void create(string $namelist) => create a list identified by a name
- *  void delete(string $namelist) => delete a list identified by a name
- *  BOOL addItem(string $namelist, array $itemsArr) => add new item in list the content of the itemArr Array
- *  ARRAY getItem(string $nameList,array $itemsArr) => get array of items object 
- *  BOOL  delItem($nameList,$filters='') => del items in list defined by filters 
- *  
+ *  String create(string $namelist) => create a list identified by a name
+ *  String delete(string $namelist) => delete a list identified by a name
+ *  String addItem(string $namelist, array $itemsArr) => add new item in list the content of the itemArr Array
+ *  lstTodo getItem(string $nameList,array $itemsArr) => get object lstTodo 
+ *  String  delItem($nameList,$filters='') => del items in list defined by filters 
+ *  String  modify
 */
 
 namespace CakeMailTest\TodoList;
 
-final class handleListsStorageDB extends handleLists {
+final class handleListsStorageDB extends listObjects {
 
 	private $DB = null;
 	
+	
+
+	
+	public function __construct($DB_NAME,$DB_USER,$DB_PWD,$DB_HOST) {
+		$this->DB = new DataBase($DB_NAME,$DB_USER,$DB_PWD,$DB_HOST);	
+	}
 	
 	/*
 	 * function create => to create a new Todolist with a specific name to be identified
 	 * @var nameList = String => name of the list 
 	 * 
 	 */
-	
-	public function __construct($DB_NAME,$DB_USER,$DB_PWD,$DB_HOST) {
-		$this->DB = new DataBase($DB_NAME,$DB_USER,$DB_PWD,$DB_HOST);	
-	}
-	
 	
 	public function create($nameList) { 
 		
@@ -52,12 +53,21 @@ final class handleListsStorageDB extends handleLists {
 	}
 	
 	/*
+	 * modify(string $nameList, array $valuesArr)
+	 * modify a status, a content of an item
+	 * 
+	 */
+	
 	public function modify($nameList, array $valuesArr) {
 		
-		
+		if ($nameList=='') throw new ExceptionToDoList ('Error modify list : Namelist is empty'); 
+		if (!self::list_existInDB($nameList)) throw new ExceptionToDoList ('Error modify : no listname '.$nameList.' found'); 
+		list($list_id,$lstTodo) = self::generate_listItem_fromDB($nameList);
+		$this->DB->prepareAndExecute("UPDATE items SET status='".DataBase::format_text_sql($valuesArr['STATUS'])."', content='".DataBase::format_text_sql($valuesArr['CONTENT'])."' WHERE list_id=$list_id and content='".DataBase::format_text_sql($valuesArr['OLDCONTENT'])."' ",'UPDATE');
+		return responseMessage::MESSAGE_MODIFYITEM_SUCCESS;
 		
 	}
-	*/
+	
 	
 	/*
 	 * function delete => to delete a Todolist identified with his name
@@ -112,7 +122,6 @@ final class handleListsStorageDB extends handleLists {
 	
 	public function delItem($nameList,$filters) {
 		 list($list_id,$lstTodo) = self::generate_listItem_fromDB($nameList,$filters);
-		 $lstTodo->deleteAllItem();
 		 $filters_sql = DataBase::generate_filter_sql($filters);	
 		 $this->DB->prepareAndExecute("DELETE FROM items WHERE list_id=$list_id  $filters_sql",'DELETE');
 		 return responseMessage::MESSAGE_DELITEM_SUCCESS;
@@ -134,17 +143,6 @@ final class handleListsStorageDB extends handleLists {
 		
 	}
 	
-	/*
-	 * function generate_lists_fromDB() 
-	 * Generate all lists object from DB records 
-	 * 
-	 */
-	
-	private function generate_lists_fromDB() {
-		
-		$listArr = $this->DB->query_select("SELECT lists.name FROM lists"); 
-		for ($i=0;$i<$listArr[0]['count_row'];$i++) parent::create($listArr[$i]['name']);
-	}
 	
 	/*
 	 * function generate_listItem_fromDB(string $nameList,array $filterArr) 

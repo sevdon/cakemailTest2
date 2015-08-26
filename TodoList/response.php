@@ -29,14 +29,14 @@ class response {
 		private function generate_xml($contentObject) {
 			
 			$contentArr = json_decode(json_encode($contentObject),true);
-			$xml_data = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><Todolst></Todolst>');
+			$xml_data = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><Todolist></Todolist>');
 			self::array_to_xml($contentArr,$xml_data);
 			return $xml_data->asXML();	
 			
 		}
 		
 		
-		public function array_to_xml( $data,&$xml_data ) {
+		private function array_to_xml( $data,&$xml_data ) {
 			
    		 foreach( $data as $key => $value ) {
    		 	
