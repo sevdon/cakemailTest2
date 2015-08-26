@@ -1,4 +1,0 @@
-CREATE TRIGGER lists_del BEFORE DELETE on lists
-FOR EACH ROW
-DELETE FROM items WHERE items.list_id = old.id;
-git 
