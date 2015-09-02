@@ -122,8 +122,10 @@ final class DataBase {
 	public function prepareAndExecute($sql,$type_requete='update',$tabmarqueurs=null) {
 		try {
 				
-			$this->prepare($sql,$type_requete);
-			$this->execute_sqlprepared($tabmarqueurs);
+			$rs = $this->prepare($sql,$type_requete);
+			$rs->execute();
+			if ($type_requete=='INSERT') return $this->pdo->lastInsertId();
+			else return $rs->rowCount();
 		} catch (\PDOException $e) {
 				die('Query error on '.$sql.' <br/> : '.$e->getMessage());
 		}
@@ -135,7 +137,7 @@ final class DataBase {
 		
 		if ((!$this->check_injection_sql) || ($this->check_injection_sql && self::is_sql_valide($sql))) {
 			try {
-				$this->prep = $this->pdo->prepare($sql);
+				return $this->prep = $this->pdo->prepare($sql);
 			} catch (\PDOException $e) {
 				die('Query error on '.$sql.' <br/> : '.$e->getMessage());
 			}
@@ -146,8 +148,8 @@ final class DataBase {
 	public function execute_sqlprepared($tabmarqueurs=null) {
 		if ($this->debugg_affiche) echo 'on execute';
 		try {
-			if (is_array($tabmarqueurs)) $this->prep->execute($tabmarqueurs);
-			else $this->prep->execute();
+			if (is_array($tabmarqueurs)) return $this->prep->execute($tabmarqueurs);
+			else return $this->prep->execute();
 		} catch (\PDOException $e) {
 				die('Query error on <br/> : '.$e->getMessage());
 			}	

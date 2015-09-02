@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>DataBase.php</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="DataBase.html">
+                  DataBase.php
+                </a>
+              
+                
+                <a class="source" href="ExceptionTodoList.html">
+                  ExceptionTodoList.php
+                </a>
+              
+                
+                <a class="source" href="actionType.html">
+                  actionType.php
+                </a>
+              
+                
+                <a class="source" href="controllerApi.html">
+                  controllerApi.php
+                </a>
+              
+                
+                <a class="source" href="errorApi.html">
+                  errorApi.php
+                </a>
+              
+                
+                <a class="source" href="handleListsStorageDB.html">
+                  handleListsStorageDB.php
+                </a>
+              
+                
+                <a class="source" href="item.html">
+                  item.php
+                </a>
+              
+                
+                <a class="source" href="listObjects.html">
+                  listObjects.php
+                </a>
+              
+                
+                <a class="source" href="listTodo.html">
+                  listTodo.php
+                </a>
+              
+                
+                <a class="source" href="request.html">
+                  request.php
+                </a>
+              
+                
+                <a class="source" href="response.html">
+                  response.php
+                </a>
+              
+                
+                <a class="source" href="responseMessage.html">
+                  responseMessage.php
+                </a>
+              
+                
+                <a class="source" href="statusItem.html">
+                  statusItem.php
+                </a>
+              
+                
+                <a class="source" href="user.html">
+                  user.php
+                </a>
+              
+                
+                <a class="source" href="validRequest.html">
+                  validRequest.php
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>DataBase.php</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-preprocessor">&lt;?php</span>
+<span class="hljs-comment">/*
+ * API CakeMailTest TodoList V1.0
+ * Author : Severine Donnay
+ * abstract class DataBase : object to manipulate all DataBase (Oracle, Mysql,SQLite) with PDO 
+ * injection SQL verification
+ * 
+ */</span>
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">CakeMailTest</span>\<span class="hljs-title">TodoList</span>;
+ 
+<span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataBase</span> </span>{
+	
+ 	<span class="hljs-keyword">private</span> <span class="hljs-variable">$dsn</span>=<span class="hljs-keyword">null</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$pdo</span> = <span class="hljs-keyword">null</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$typeBDD</span>=<span class="hljs-string">'MYSQL'</span>;
+	<span class="hljs-keyword">public</span> <span class="hljs-variable">$debugg_affiche</span> = DEBBUGAGE_MODE;
+	<span class="hljs-keyword">protected</span> <span class="hljs-variable">$prep</span>=<span class="hljs-keyword">null</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$check_injection_sql</span> = <span class="hljs-keyword">false</span>;
+	
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$dbname</span>,<span class="hljs-variable">$user</span>=<span class="hljs-string">''</span>,<span class="hljs-variable">$pwd</span>=<span class="hljs-string">''</span>,<span class="hljs-variable">$host</span>=<span class="hljs-string">''</span>,<span class="hljs-variable">$typeDB</span>=<span class="hljs-string">'MYSQL'</span>)</span> </span>{
+		
+		<span class="hljs-variable">$this</span>-&gt;typeBDD=<span class="hljs-variable">$typeDB</span>;
+		<span class="hljs-keyword">try</span> {
+			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;typeBDD==<span class="hljs-string">'MYSQL'</span>) {
+				<span class="hljs-variable">$this</span>-&gt;dsn = <span class="hljs-string">"mysql:host=$host;dbname=$dbname"</span>;
+				<span class="hljs-variable">$this</span>-&gt;pdo = <span class="hljs-keyword">new</span> \PDO(<span class="hljs-variable">$this</span>-&gt;dsn,<span class="hljs-variable">$user</span>,<span class="hljs-variable">$pwd</span>);
+				<span class="hljs-variable">$this</span>-&gt;pdo-&gt;setAttribute (\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			} <span class="hljs-keyword">elseif</span> (<span class="hljs-variable">$this</span>-&gt;typeBDD==<span class="hljs-string">'ORACLE'</span>) {
+				<span class="hljs-variable">$this</span>-&gt;dsn = <span class="hljs-string">"oci:dbname=$dbname"</span>;
+				<span class="hljs-variable">$this</span>-&gt;pdo = <span class="hljs-keyword">new</span> \PDO(<span class="hljs-variable">$this</span>-&gt;dsn);
+			} <span class="hljs-keyword">elseif</span> (<span class="hljs-variable">$this</span>-&gt;typeBDD==<span class="hljs-string">'SQLITE'</span>) {
+				<span class="hljs-variable">$this</span>-&gt;dsn = <span class="hljs-string">"sqlite2:$dbname"</span>;
+				<span class="hljs-variable">$this</span>-&gt;pdo = <span class="hljs-keyword">new</span> \PDO(<span class="hljs-variable">$this</span>-&gt;dsn);
+			}
+		} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
+			<span class="hljs-keyword">die</span>(<span class="hljs-string">'Error connect to DB : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());	
+		}
+		
+	}
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">check_injection_sql</span><span class="hljs-params">(BOOL <span class="hljs-variable">$status</span>)</span> </span>{
+		
+		<span class="hljs-variable">$this</span>-&gt;check_injection_sql = <span class="hljs-variable">$status</span>;
+	}
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">connect_dsn</span><span class="hljs-params">(<span class="hljs-variable">$dsn</span>)</span> </span>{
+		
+		<span class="hljs-variable">$this</span>-&gt;dsn = <span class="hljs-variable">$dsn</span>;
+		<span class="hljs-keyword">try</span> {
+			<span class="hljs-variable">$this</span>-&gt;pdo = <span class="hljs-keyword">new</span> \PDO(<span class="hljs-variable">$this</span>-&gt;dsn);
+		} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
+			<span class="hljs-keyword">die</span>(<span class="hljs-string">'Error connect to DB : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());	
+		}
+	}
+	
+	
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query_select</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>)</span> </span>{
+		
+		<span class="hljs-keyword">if</span> ((!<span class="hljs-variable">$this</span>-&gt;check_injection_sql) || (<span class="hljs-variable">$this</span>-&gt;check_injection_sql &amp;&amp; <span class="hljs-keyword">self</span>::is_sql_valide(<span class="hljs-variable">$sql</span>))) {
+			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;debugg_affiche) <span class="hljs-keyword">echo</span> <span class="hljs-string">'on fait la requete SELECT: '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">'&lt;br/&gt;'</span>;
+			<span class="hljs-variable">$results</span> = <span class="hljs-variable">$this</span>-&gt;query(<span class="hljs-variable">$sql</span>);
+			<span class="hljs-variable">$i</span>=<span class="hljs-number">0</span>;
+			<span class="hljs-keyword">while</span> (<span class="hljs-variable">$result</span> = <span class="hljs-variable">$results</span>-&gt;fetch()) {
+				<span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$result</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$key</span> =&gt; <span class="hljs-variable">$elem</span>) {
+					<span class="hljs-variable">$tab_ass</span>[<span class="hljs-variable">$i</span>][<span class="hljs-variable">$key</span>] = stripslashes(<span class="hljs-variable">$elem</span>);	
+				}			
+				<span class="hljs-variable">$i</span>++;
+			}
+			<span class="hljs-variable">$tab_ass</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>]=<span class="hljs-variable">$i</span>;
+			<span class="hljs-keyword">return</span> <span class="hljs-variable">$tab_ass</span>;
+		} 
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+	}
+	
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query_get_valeur</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$field</span>)</span> </span>{
+		
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;debugg_affiche) <span class="hljs-keyword">echo</span> <span class="hljs-string">'on fait la requete dans get_valeur : '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">'&lt;br/&gt;'</span>;
+		<span class="hljs-variable">$tab_ass</span> = <span class="hljs-variable">$this</span>-&gt;query_select(<span class="hljs-variable">$sql</span>);
+		<span class="hljs-keyword">return</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$tab_ass</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>]) &amp;&amp; <span class="hljs-variable">$tab_ass</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>]&gt;<span class="hljs-number">0</span>)?<span class="hljs-variable">$tab_ass</span>[<span class="hljs-number">0</span>][<span class="hljs-variable">$field</span>]:<span class="hljs-keyword">false</span>;
+		
+	}
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query_exec</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$type_requete</span>=<span class="hljs-string">"update"</span>)</span> </span>{
+	
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;debugg_affiche) <span class="hljs-keyword">echo</span> <span class="hljs-string">'on fait la requete : '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">'&lt;br/&gt;'</span>;
+		<span class="hljs-keyword">if</span> ((!<span class="hljs-variable">$this</span>-&gt;check_injection_sql) || (<span class="hljs-variable">$this</span>-&gt;check_injection_sql &amp;&amp; <span class="hljs-keyword">self</span>::is_sql_valide(<span class="hljs-variable">$sql</span>))) <span class="hljs-variable">$count_row</span> = <span class="hljs-variable">$this</span>-&gt;query_ex(<span class="hljs-variable">$sql</span>);
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;	
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+		
+	}
+	
+	<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>)</span> </span>{
+		<span class="hljs-keyword">try</span> {
+			<span class="hljs-variable">$results</span> = <span class="hljs-variable">$this</span>-&gt;pdo-&gt;query(<span class="hljs-variable">$sql</span>);
+		} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
+			<span class="hljs-keyword">die</span>(<span class="hljs-string">'Query error on : '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">' &lt;br/&gt; : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());
+		}
+		<span class="hljs-keyword">return</span> <span class="hljs-variable">$results</span>;
+		
+	}
+	
+	 <span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query_ex</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>)</span> </span>{
+		<span class="hljs-keyword">try</span> {
+			<span class="hljs-variable">$count_row</span> = <span class="hljs-variable">$this</span>-&gt;pdo-&gt;exec(<span class="hljs-variable">$sql</span>);
+		} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
+			<span class="hljs-keyword">die</span>(<span class="hljs-string">'Query error on '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">' &lt;br/&gt; : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());
+		}
+		<span class="hljs-keyword">return</span> <span class="hljs-variable">$count_row</span>;
+		
+	}
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query_num_rows</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>)</span> </span>{
+	
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;debugg_affiche) <span class="hljs-keyword">echo</span> <span class="hljs-string">'on v�rifie le nb d\'enreg : '</span>.<span class="hljs-variable">$sql</span>;
+		<span class="hljs-keyword">if</span> ((!<span class="hljs-variable">$this</span>-&gt;check_injection_sql) || (<span class="hljs-variable">$this</span>-&gt;check_injection_sql &amp;&amp; <span class="hljs-keyword">self</span>::is_sql_valide(<span class="hljs-variable">$sql</span>))) <span class="hljs-keyword">return</span> <span class="hljs-variable">$this</span>-&gt;query_ex(<span class="hljs-variable">$sql</span>);
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;	
+	}
+
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prepareAndExecute</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$type_requete</span>=<span class="hljs-string">'update'</span>,<span class="hljs-variable">$tabmarqueurs</span>=null)</span> </span>{
+		<span class="hljs-keyword">try</span> {
+				
+			<span class="hljs-variable">$this</span>-&gt;prepare(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$type_requete</span>);
+			<span class="hljs-variable">$this</span>-&gt;execute_sqlprepared(<span class="hljs-variable">$tabmarqueurs</span>);
+		} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
+				<span class="hljs-keyword">die</span>(<span class="hljs-string">'Query error on '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">' &lt;br/&gt; : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());
+		}
+	}
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prepare</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$type_requete</span>=<span class="hljs-string">'update'</span>)</span> </span>{
+		
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;debugg_affiche) <span class="hljs-keyword">echo</span> <span class="hljs-string">'on prepare '</span>. <span class="hljs-variable">$type_requete</span> .<span class="hljs-string">' : '</span>.<span class="hljs-variable">$sql</span>;
+		
+		<span class="hljs-keyword">if</span> ((!<span class="hljs-variable">$this</span>-&gt;check_injection_sql) || (<span class="hljs-variable">$this</span>-&gt;check_injection_sql &amp;&amp; <span class="hljs-keyword">self</span>::is_sql_valide(<span class="hljs-variable">$sql</span>))) {
+			<span class="hljs-keyword">try</span> {
+				<span class="hljs-variable">$this</span>-&gt;prep = <span class="hljs-variable">$this</span>-&gt;pdo-&gt;prepare(<span class="hljs-variable">$sql</span>);
+			} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
+				<span class="hljs-keyword">die</span>(<span class="hljs-string">'Query error on '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">' &lt;br/&gt; : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());
+			}
+		}	
+		
+	}	
+
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">execute_sqlprepared</span><span class="hljs-params">(<span class="hljs-variable">$tabmarqueurs</span>=null)</span> </span>{
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;debugg_affiche) <span class="hljs-keyword">echo</span> <span class="hljs-string">'on execute'</span>;
+		<span class="hljs-keyword">try</span> {
+			<span class="hljs-keyword">if</span> (is_array(<span class="hljs-variable">$tabmarqueurs</span>)) <span class="hljs-variable">$this</span>-&gt;prep-&gt;execute(<span class="hljs-variable">$tabmarqueurs</span>);
+			<span class="hljs-keyword">else</span> <span class="hljs-variable">$this</span>-&gt;prep-&gt;execute();
+		} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
+				<span class="hljs-keyword">die</span>(<span class="hljs-string">'Query error on &lt;br/&gt; : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());
+			}	
+		
+	}
+	
+	<span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">is_sql_valide</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$type_requete</span>=<span class="hljs-string">'select'</span>)</span> </span>{
+			
+		<span class="hljs-variable">$pattern</span>=<span class="hljs-string">''</span>;
+		<span class="hljs-keyword">switch</span> (<span class="hljs-variable">$type_requete</span>) {
+			
+			<span class="hljs-keyword">case</span> <span class="hljs-string">'SELECT'</span> : <span class="hljs-variable">$pattern</span> = <span class="hljs-string">'/^select/i'</span>; <span class="hljs-variable">$tab_forbidden</span>=<span class="hljs-keyword">array</span>(<span class="hljs-string">'delete'</span>,<span class="hljs-string">'insert'</span>,<span class="hljs-string">'update'</span>,<span class="hljs-string">'alter'</span>,<span class="hljs-string">'describe'</span>,<span class="hljs-string">'create'</span>);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> <span class="hljs-string">'UPDATE'</span> : <span class="hljs-variable">$pattern</span> = <span class="hljs-string">'/^update/i'</span>; <span class="hljs-variable">$tab_forbidden</span>=<span class="hljs-keyword">array</span>(<span class="hljs-string">'delete'</span>,<span class="hljs-string">'insert'</span>,<span class="hljs-string">'select'</span>,<span class="hljs-string">'alter'</span>,<span class="hljs-string">'describe'</span>,<span class="hljs-string">'create'</span>);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> <span class="hljs-string">'INSERT'</span> : <span class="hljs-variable">$pattern</span> = <span class="hljs-string">'/^insert/i'</span>; <span class="hljs-variable">$tab_forbidden</span>=<span class="hljs-keyword">array</span>(<span class="hljs-string">'delete'</span>,<span class="hljs-string">'select'</span>,<span class="hljs-string">'update'</span>,<span class="hljs-string">'alter'</span>,<span class="hljs-string">'describe'</span>,<span class="hljs-string">'create'</span>);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> <span class="hljs-string">'DELETE'</span> : <span class="hljs-variable">$pattern</span> = <span class="hljs-string">'/^delete/i'</span>; <span class="hljs-variable">$tab_forbidden</span>=<span class="hljs-keyword">array</span>(<span class="hljs-string">'select'</span>,<span class="hljs-string">'insert'</span>,<span class="hljs-string">'update'</span>,<span class="hljs-string">'alter'</span>,<span class="hljs-string">'describe'</span>,<span class="hljs-string">'create'</span>);<span class="hljs-keyword">break</span>;
+			
+		}
+			
+		<span class="hljs-keyword">return</span> ((preg_match(<span class="hljs-variable">$pattern</span>, trim(<span class="hljs-variable">$sql</span>))==<span class="hljs-keyword">true</span>) &amp;&amp; (<span class="hljs-keyword">self</span>::stristr_multi(trim(<span class="hljs-variable">$sql</span>), <span class="hljs-variable">$tab_forbidden</span>)==<span class="hljs-keyword">false</span>)) ? <span class="hljs-keyword">true</span> : <span class="hljs-keyword">false</span>;
+		
+	}
+	
+	
+	<span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">has_injection_sql</span><span class="hljs-params">(<span class="hljs-variable">$var</span>)</span> </span>{
+		
+		<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$var</span>)) { <span class="hljs-comment">// utilisation de stripos car insensible à la casse</span>
+			<span class="hljs-variable">$tab_forbidden</span>=<span class="hljs-keyword">array</span>(<span class="hljs-string">';select'</span>,<span class="hljs-string">';delete'</span>,<span class="hljs-string">';insert'</span>,<span class="hljs-string">';update'</span>,<span class="hljs-string">';alter'</span>,<span class="hljs-string">';describe'</span>,<span class="hljs-string">';create'</span>); 
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">self</span>::stristr_multi(<span class="hljs-variable">$var</span>,<span class="hljs-variable">$tab_forbidden</span>)) <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+		}
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+		
+	}
+	
+	<span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">format_text_sql</span> <span class="hljs-params">(<span class="hljs-variable">$data</span>)</span> </span>{
+		
+			<span class="hljs-keyword">return</span> addslashes(<span class="hljs-variable">$data</span>);
+		
+	} 
+	
+	<span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">stristr_multi</span><span class="hljs-params">(<span class="hljs-variable">$chaine</span>,array <span class="hljs-variable">$tab</span>,<span class="hljs-variable">$flag</span>=<span class="hljs-string">'ONE_ELEM'</span>)</span> </span>{
+	
+		<span class="hljs-keyword">foreach</span> (<span class="hljs-variable">$tab</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$elem</span>) {
+			<span class="hljs-keyword">if</span> (stristr(<span class="hljs-variable">$chaine</span>, <span class="hljs-variable">$elem</span>)===<span class="hljs-keyword">false</span>) {
+				<span class="hljs-keyword">if</span> (<span class="hljs-variable">$flag</span>==<span class="hljs-string">'ALL_ELEM'</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;	
+			} <span class="hljs-keyword">elseif</span> (<span class="hljs-variable">$flag</span>==<span class="hljs-string">'ONE_ELEM'</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+		}
+		<span class="hljs-keyword">return</span> (<span class="hljs-variable">$flag</span>==<span class="hljs-string">'ALL_ELEM'</span>) ? <span class="hljs-keyword">true</span> : <span class="hljs-keyword">false</span>;
+	}
+	
+	<span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">generate_filter_sql</span><span class="hljs-params">(<span class="hljs-variable">$filters</span>)</span> </span>{
+		
+		<span class="hljs-variable">$sql_filter</span> = <span class="hljs-string">''</span>;
+		<span class="hljs-keyword">foreach</span> (<span class="hljs-variable">$filters</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$key</span>=&gt;<span class="hljs-variable">$value</span>) {
+			<span class="hljs-variable">$sql_filter</span>.= <span class="hljs-string">' AND '</span>.<span class="hljs-variable">$key</span>.<span class="hljs-string">' = \''</span>.<span class="hljs-variable">$value</span>.<span class="hljs-string">'\' '</span>;
+		}
+		<span class="hljs-keyword">return</span> <span class="hljs-variable">$sql_filter</span>;
+	}
+			
+	
+}	
+	
+<span class="hljs-preprocessor">?&gt;</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

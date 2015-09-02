@@ -15,11 +15,6 @@ define('DB_USER','root');
 define('DB_PWD','root');
 define('DB_NAME','CakeMailTestTodoList');
 
-/*
- * Request MODE GET | POST
- */
-
-define('METHOD_TYPE','POST');
 
 /*
  * DEBBUAGE_MODE TRUE | FALSE

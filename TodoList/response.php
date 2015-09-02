@@ -1,6 +1,6 @@
 <?php
 /* 
- * API CakeMailTest TodoList V1.0
+ * API CakeMailTest TodoList V2.0
  * Author : Severine Donnay
  * Class response : response to send
  * 
@@ -8,47 +8,48 @@
 namespace CakeMailTest\TodoList;
 class response {
 	
-	private $content=array();
-	private $type_content='text/html';
+	const   CONTENT_TYPE ='application/json';
+	private $status_message;
+	private $status;
+	private $data;
+	private $authorization = false;
 	
-		public function __construct($content,$type_content) {
-			
-			$this->content=$content;
-			$this->type_content=$type_content;
+		public function __construct() {
+
+		}
+		
+		public function set_content($status,$status_message,$data) {
+			$this->data=$data;
+			$this->status=$status;
+			$this->status_message=$status_message;
 		}
 		
 		public function send() {
-			$content = $this->type_content;
-			header("Content-Type: $content");
+			
+			$content_type = self::CONTENT_TYPE;
+			$status = $this->status;
+			$status_message = $this->status_message;
+			
+			$responseArr['status']=$status;
+			$responseArr['status_message']=$status_message;
+			 
+			if ($this->data !=null) $responseArr['data'] = json_decode(json_encode($this->data),true); // transform to array
+			if ($this->authorization) header("HTTP/1.1 : $status $status_message");
+			else {
+				header('WWW-Authenticate: Token');
+				header('HTTP/1.0 401 Unauthorized');
+			}
+			
+			header("Content-Type: $content_type");
 			header("Cache-Control: no-cache, must-revalidate");
-			if ($this->type_content=='text/html') return $this->content;
-			elseif ($this->type_content=='text/xml') return self::generate_xml($this->content);
-		}
-		
-		
-		private function generate_xml($contentObject) {
-			
-			$contentArr = json_decode(json_encode($contentObject),true);
-			$xml_data = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><Todolist></Todolist>');
-			self::array_to_xml($contentArr,$xml_data);
-			return $xml_data->asXML();	
+			echo $this->authorization;
+			return json_encode($responseArr);
 			
 		}
 		
-		
-		private function array_to_xml( $data,&$xml_data ) {
-			
-   		 foreach( $data as $key => $value ) {
-   		 	
-	        	if (is_array($value)) {
-	            	if( is_numeric($key)) $key = 'item'.$key; 
-	            	$subnode = $xml_data->addChild($key);
-	            	self::array_to_xml($value, $subnode);
-	        	} else {
-	            	$xml_data->addChild($key,htmlspecialchars($value));
-	       		 }
-    	 }
-}
+		public function authorization($bool) {
+			$this->authorization = $bool;
+		}
 
 
 		

@@ -8,12 +8,8 @@
 namespace CakeMailTest\TodoList;
 abstract class errorApi {
 	
-	const EMPTYREQUEST_ERR='Post values is empty';	
-	const EMPTYLOGIN_ERR='Login is missing';
-	const EMPTYPWD_ERR='Password is missing';
-	const EMPTYACTION_ERR='ActionType is missing';
 	const AUTHENTICATION_ERR='Authentification fail';
-	const POSTFORMAT_ERR='Post format error';
+	const VERB_ERR='Error format : verb sent is not valid';
 	
 	
 }

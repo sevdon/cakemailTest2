@@ -10,12 +10,13 @@
 
 namespace CakeMailTest\TodoList;
 
-class listTodo extends listObjects {
+class listTodo  {
 	
-	public $nameList = null;
+	public $id=null;
+	public $items=array();
 	
-	public function __construct($nameList) {
-		$this->nameList=$nameList;
+	public function __construct($id) {
+		$this->id=$id;
 	}
 	
 	
@@ -52,9 +53,9 @@ class listTodo extends listObjects {
 	
 	public function getItem(array $filter) {
 
-		if ($filter=='') return $this->listsArr;
-		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_STATUS) return array_filter($this->listsArr,'self::filter_status_default');
-		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_DONE) return array_filter($this->listsArr,'self::filter_status_done');
+		if ($filter=='') return $this->items;
+		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_STATUS) return array_filter($this->items,'self::filter_status_default');
+		elseif (parent::arrayKeyExists('status', $filter) && $filter['status']==statusItem::DEFAULT_DONE) return array_filter($this->items,'self::filter_status_done');
 		else throw new ExceptionTodoList('Error : filters no defined');
 		
 	}
@@ -70,11 +71,9 @@ class listTodo extends listObjects {
 			$args = array_values($itemsArr);
 			$refItem = new \ReflectionClass('CakeMailTest\TodoList\item');
 			$item = $refItem->newInstanceArgs($args);
-		 	array_push($this->listsArr, $item);
+		 	array_push($this->items, $item);
 		 	return $item;		
 	}
-	
-
 		
 	
 }

@@ -8,12 +8,16 @@ namespace CakeMailTest\TodoList;
 
 class item {
 	
+	public $id = null;
 	public $content = null;
 	public $status = null;
 	
-	function __construct($content,$status=statusItem::DEFAULT_STATUS) {
+	function __construct($id,$content,$status=statusItem::DEFAULT_STATUS) {
+		
+		$this->id = $id;
 		$this->content = $content;
-		$this->status = $status;	
+		$this->status = $status;
+			
 	}
 	
 	public function set_status($status) {

@@ -10,17 +10,21 @@ namespace CakeMailTest\TodoList;
 class controllerApi {
 	
 	public function request() {
-		if (version_compare(PHP_VERSION, '5.4.0', '<')) throw new ExceptionTodoList('The CakeMailTest TodoList Api requires version 5.4 or higher .');
-		$requestArr = (METHOD_TYPE=='POST') ? filter_input_array(INPUT_POST) : filter_input_array(INPUT_GET); // GET ALL POST or GET VALUES
-		if (validRequest::mandatoryField($requestArr)) {
+		$reponse = new response();
+		if (user::authorization()) {
+			$reponse->authorization(true);
 			try {
-				$Request = new request($requestArr,$requestArr['ACTIONTYPE']); // send Request
-				echo $Request->getResponse();   	 				
+				$request = new request($_SERVER['REQUEST_URI'],$_SERVER['REQUEST_METHOD']); // send Request	
+				call_user_func_array(array($reponse,'set_content'),$request->getResponse());			
 			} catch (ExceptionTodoList $e) {
-				echo $e->getMessage();
+				$reponse->set_content('404',$e->getMessage(),null);
+				echo $reponse->send();
 				exit();
 			}	
+		} else {  
+			$reponse->set_content('401',errorApi::AUTHENTICATION_ERR,null);
 		}				
+		echo $reponse->send();
 	}
 }
 
