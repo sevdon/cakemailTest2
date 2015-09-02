@@ -8,10 +8,10 @@
  * /api/todolists      		    				POST    add a new todolist  :: return id created                      
  * /api/todolists/:id      						DELETE  delete the todolist with id ofÊ: id
  * /api/todolists	  			    			GET     return all todolist
- * /api/todolists/:id/items/:content:status		PUT		update/add item with content ofÊ: content for the todolists with id ofÊ: id - update status if this value is filled
- * /api/todolists/:id/items 					GET     return the items for the totolistÊwith id ofÊ: id
- * /api/todolists/:id/items/:status   		 	GET     return the item with status ofÊ: status for the todolists with id ofÊ: id
- * /api/todolists/:id/items/:iid	  		 	DELETE	delete item with iid ofÊ: iid for the todolists with id ofÊ: id
+ * /api/todolists/id/items/:content:status		PUT		update/add item with content ofÊ: content for the todolists with id ofÊ: id - update status if this value is filled
+ * /api/todolists/id/items 						GET     return the items for the totolistÊwith id ofÊ: id
+ * /api/todolists/id/items/:status   		 	GET     return the item with status ofÊ: status for the todolists with id ofÊ: id
+ * /api/todolists/id/items/:iid	  		 		DELETE	delete item with iid ofÊ: iid for the todolists with id ofÊ: id
  *  
  */
 
@@ -49,20 +49,18 @@ final class request {
 		$collections = array_intersect($uriArr, ($this->collectionArr)); // only collections name
 		$collection_call = array_pop($collections); // the first collection name is the collection call
 		$method = strtolower($verb.'_'.$collection_call); // method to call has format verb_collection 
-		if (DEBBUGAGE_MODE) echo $method;
 		$args = array_filter($uriArr, function($val) { // filter for arguments only val begin with : 
 			$exp = '/^:/';
-			return (preg_match($exp,$val) || is_int($val)); 
+			return (preg_match($exp,$val) || is_numeric($val)); 
 		});
+		
 		$arg_str = implode('',$args);
-		$args = explode(':',substr($arg_str,1));
-		if (DEBBUGAGE_MODE) var_dump($args);
+		if (strlen($arg_str)>0 && $arg_str[0]!=':') $arg_str = ':'.$arg_str;
+	    $args = explode(':',substr($arg_str,1));
 		return (array($method,$args));
 	}
 	 
 }
-
-
 			
 
 ?>

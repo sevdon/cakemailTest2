@@ -12,10 +12,10 @@ namespace CakeMailTest\TodoList;
 abstract class user {
 	
 	const ID = '1';
-	const TOKEN = '819e1f61626f992055f6167dcf3d9a86b32d4e'; // detravaillerchezCakeMail
+	const TOKEN = '819e1f61626f992055f6167dcf3d9a86b32d4e79'; // detravaillerchezCakeMail
 	
 	static function authorization() {
-		
+	
 		$HEADERS = apache_request_headers();
 		if (!isset($HEADERS['Authorization']) || !isset($_SERVER['REQUEST_METHOD']) || !isset($_SERVER['REQUEST_URI'])) return false;
 		$pass = $HEADERS['Authorization'];

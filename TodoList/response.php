@@ -42,7 +42,6 @@ class response {
 			
 			header("Content-Type: $content_type");
 			header("Cache-Control: no-cache, must-revalidate");
-			echo $this->authorization;
 			return json_encode($responseArr);
 			
 		}

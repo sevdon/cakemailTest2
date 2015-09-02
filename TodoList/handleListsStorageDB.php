@@ -114,9 +114,8 @@ final class handleListsStorageDB {
 	
 	public function get_todolists() {
 		
-		 $rs = $this->DB->query_select("SELECT lists.id, DATE_FORMAT(lists.datecrea,'%m-%d-%Y') as date FROM lists order by id ASC"); 	 
-		 $data = json_decode(json_encode($rs),true);	
-		 return (array(200,responseMessage::MESSAGE_GETLIST_SUCCESS,$data));
+		 $rs = $this->DB->query_select_json("SELECT lists.id, DATE_FORMAT(lists.datecrea,'%m-%d-%Y') as date FROM lists order by id ASC"); 
+		 return (array(200,responseMessage::MESSAGE_GETLIST_SUCCESS,$rs));
 	} 
 	
 	

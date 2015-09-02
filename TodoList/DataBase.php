@@ -55,6 +55,26 @@ final class DataBase {
 	}
 	
 	
+	public function query_select_json($sql) {
+		
+		if ((!$this->check_injection_sql) || ($this->check_injection_sql && self::is_sql_valide($sql))) {
+			if ($this->debugg_affiche) echo 'on fait la requete SELECT: '.$sql.'<br/>';
+			$results = $this->query($sql);
+			$i=0;
+			$tab_json= array();
+			$tab_ass=array();
+			while ($result = $results->fetch()) {
+				foreach($result as $key => $elem) {
+					if ($key !='0' && $key !='1') $tab_ass[$key] = stripslashes($elem);
+				}			
+				$i++;
+				array_push($tab_json,$tab_ass);
+			}
+			
+			return json_decode(json_encode($tab_json),true);
+		} 
+		return false;
+	}
 	
 	public function query_select($sql) {
 		
@@ -64,7 +84,7 @@ final class DataBase {
 			$i=0;
 			while ($result = $results->fetch()) {
 				foreach($result as $key => $elem) {
-					$tab_ass[$i][$key] = stripslashes($elem);	
+					if ($key !='0' && $key !='1')  $tab_ass[$i][$key] = stripslashes($elem);	
 				}			
 				$i++;
 			}

@@ -14,8 +14,8 @@ class controllerApi {
 		if (user::authorization()) {
 			$reponse->authorization(true);
 			try {
-				$request = new request($_SERVER['REQUEST_URI'],$_SERVER['REQUEST_METHOD']); // send Request	
-				call_user_func_array(array($reponse,'set_content'),$request->getResponse());			
+				$request = new request($_SERVER['REQUEST_URI'],$_SERVER['REQUEST_METHOD']); 
+				call_user_func_array(array($reponse,'set_content'),$request->getResponse()); // send Request and set_content in response				
 			} catch (ExceptionTodoList $e) {
 				$reponse->set_content('404',$e->getMessage(),null);
 				echo $reponse->send();
