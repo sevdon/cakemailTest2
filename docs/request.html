@@ -30,11 +30,6 @@
                 </a>
               
                 
-                <a class="source" href="actionType.html">
-                  actionType.php
-                </a>
-              
-                
                 <a class="source" href="controllerApi.html">
                   controllerApi.php
                 </a>
@@ -52,11 +47,6 @@
                 
                 <a class="source" href="item.html">
                   item.php
-                </a>
-              
-                
-                <a class="source" href="listObjects.html">
-                  listObjects.php
                 </a>
               
                 
@@ -89,11 +79,6 @@
                   user.php
                 </a>
               
-                
-                <a class="source" href="validRequest.html">
-                  validRequest.php
-                </a>
-              
             </div>
           </div>
         </li>
@@ -120,98 +105,69 @@
             
             <div class="content"><div class='highlight'><pre><span class="hljs-preprocessor">&lt;?php</span>
 <span class="hljs-comment">/* 
+ * Api RESTFul V1.0 CakeMailTest TodoList
  * Class request : send request to HandleListStorageDB object and send response to APIController
  * Author : Severine Donnay
- * POST VALUES ARE : [ACTIONTYPE] and FIELDS required for Actiontype
- * Actiontype is Type of Request : all types are defined in actionType class
  * 
- * [ACTIONTYPE] = CREATE_ACTION | MODIFY_ACTION | DELETE_ACTION | ADDITEM_ACTION | DELETEITEM_ACTION | GETLIST_ACTION | MODIFYITEM_ACTION
+ * 
+ * /api/todolists      		    				POST    add a new todolist  :: return id created                      
+ * /api/todolists/:id      						DELETE  delete the todolist with id of�: id
+ * /api/todolists	  			    			GET     return all todolist
+ * /api/todolists/:id/items/:content:status		PUT		update/add item with content of�: content for the todolists with id of�: id - update status if this value is filled
+ * /api/todolists/:id/items 					GET     return the items for the totolist�with id of�: id
+ * /api/todolists/:id/items/:status   		 	GET     return the item with status of�: status for the todolists with id of�: id
+ * /api/todolists/:id/items/:iid	  		 	DELETE	delete item with iid of�: iid for the todolists with id of�: id
  *  
  */</span>
+
 <span class="hljs-keyword">namespace</span> <span class="hljs-title">CakeMailTest</span>\<span class="hljs-title">TodoList</span>;
 <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">request</span> </span>{
 	
-	<span class="hljs-keyword">private</span> <span class="hljs-variable">$requestArr</span> =<span class="hljs-keyword">null</span>;
-	<span class="hljs-keyword">private</span> <span class="hljs-variable">$actionType</span> =<span class="hljs-keyword">null</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$uri</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$verb</span>;
 	<span class="hljs-keyword">private</span> <span class="hljs-variable">$handleLists</span>;
-	<span class="hljs-keyword">private</span> <span class="hljs-variable">$type_content</span> = <span class="hljs-string">'text/html'</span>; 
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$response</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$verbsArr</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">'GET'</span>,<span class="hljs-string">'POST'</span>,<span class="hljs-string">'PUT'</span>,<span class="hljs-string">'DELETE'</span>);
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$collectionArr</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">'todolists'</span>,<span class="hljs-string">'items'</span>);
 	
-	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$requestArr</span>,<span class="hljs-variable">$actionType</span>)</span> </span>{
-		<span class="hljs-variable">$this</span>-&gt;requestArr = <span class="hljs-variable">$requestArr</span>;
-		<span class="hljs-variable">$this</span>-&gt;actionType = <span class="hljs-variable">$actionType</span>;
-		
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$uri</span>,<span class="hljs-variable">$verb</span>)</span> </span>{
+		<span class="hljs-variable">$this</span>-&gt;uri = <span class="hljs-variable">$uri</span>;
+		<span class="hljs-variable">$this</span>-&gt;verb = <span class="hljs-variable">$verb</span>;
+		<span class="hljs-keyword">if</span> (!in_array(<span class="hljs-variable">$verb</span>,<span class="hljs-variable">$this</span>-&gt;verbsArr)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (errorApi::VERB_ERR);	
 	}
 	
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getResponse</span><span class="hljs-params">()</span> </span>{
-		
+			
+	    <span class="hljs-variable">$this</span>-&gt;handleLists = <span class="hljs-keyword">new</span> handleListsStorageDB(DB_NAME,DB_USER,DB_PWD,DB_HOST); <span class="hljs-comment">// objet to manage ToLists and storage to DB</span>
+	    <span class="hljs-keyword">list</span>(<span class="hljs-variable">$method</span>,<span class="hljs-variable">$args</span>)=<span class="hljs-keyword">self</span>::generate_call(<span class="hljs-variable">$this</span>-&gt;verb,<span class="hljs-variable">$this</span>-&gt;uri);
+        <span class="hljs-variable">$method</span> = <span class="hljs-keyword">array</span> (<span class="hljs-variable">$this</span>-&gt;handleLists,<span class="hljs-variable">$method</span>); <span class="hljs-comment">//  method with args to manage request</span>
+       	<span class="hljs-keyword">return</span> call_user_func_array(<span class="hljs-variable">$method</span>,<span class="hljs-variable">$args</span>); <span class="hljs-comment">// call this method and return to Controller</span>
+	}
+	
+	<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">generate_call</span><span class="hljs-params">(<span class="hljs-variable">$verb</span>,<span class="hljs-variable">$uri</span>)</span> </span>{
 		<span class="hljs-comment">/*
-		 *  call checkform in validRequest class to check if all required fields are in the request with format
-		 *  Important to add validRequest traitment when add a new Action in API
+		 * generate method from uri and verbs : post_items, get_items, put_items, post_todolists...
+		 * generate array of args from uri
 		 */</span>
 		
-		<span class="hljs-keyword">if</span> (!validRequest::checkFormat(<span class="hljs-variable">$this</span>-&gt;requestArr,<span class="hljs-variable">$this</span>-&gt;actionType)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionTodoList (errorApi::POSTFORMAT_ERR); 
-	    <span class="hljs-variable">$this</span>-&gt;handleLists = <span class="hljs-keyword">new</span> handleListsStorageDB(DB_NAME,DB_USER,DB_PWD,DB_HOST); <span class="hljs-comment">// objet to manage ToLists and storage to DB</span>
-	     
-         <span class="hljs-keyword">switch</span> (<span class="hljs-variable">$this</span>-&gt;requestArr[<span class="hljs-string">'ACTIONTYPE'</span>]) {
-				
-			<span class="hljs-keyword">case</span> actionType::CREATE_ACTION : <span class="hljs-comment">// create new listname : 'NAMELIST' is required field</span>
-				<span class="hljs-variable">$func_name</span>=<span class="hljs-string">'create'</span>;
-				<span class="hljs-variable">$args</span> = array_values(array_intersect_key(<span class="hljs-variable">$this</span>-&gt;requestArr, array_flip(<span class="hljs-keyword">array</span>(<span class="hljs-string">'NAMELIST'</span>)))); 
-				<span class="hljs-keyword">break</span>;
-
-			<span class="hljs-keyword">case</span> actionType::MODIFY_ACTION : <span class="hljs-comment">// modify listname : 'NAMELIST','NEWNAMELIST' are required fields</span>
-				<span class="hljs-variable">$func_name</span>=<span class="hljs-string">'modifyLst'</span>;
-				<span class="hljs-variable">$argsArr</span>=array_intersect_key(<span class="hljs-variable">$this</span>-&gt;requestArr, array_flip(<span class="hljs-keyword">array</span>(<span class="hljs-string">'NAMELIST'</span>,<span class="hljs-string">'NEWNAMELIST'</span>)));
-				ksort(<span class="hljs-variable">$argsArr</span>); <span class="hljs-comment">// args order by alphaNum : NAMELIST, NEWNAMELIST :: same order than arguments in modifyLst function</span>
-				<span class="hljs-variable">$args</span> = array_values(<span class="hljs-variable">$argsArr</span>); 
-				<span class="hljs-keyword">break</span>;	
-				
-			<span class="hljs-keyword">case</span> actionType::DELETE_ACTION : <span class="hljs-comment">// delete new listname : 'NAMELIST' is required field</span>
-				<span class="hljs-variable">$func_name</span>=<span class="hljs-string">'delete'</span>;
-				<span class="hljs-variable">$args</span> = array_values(array_intersect_key(<span class="hljs-variable">$this</span>-&gt;requestArr, array_flip(<span class="hljs-keyword">array</span>(<span class="hljs-string">'NAMELIST'</span>)))); 
-				<span class="hljs-keyword">break</span>;
-				
-			<span class="hljs-keyword">case</span> actionType::ADDITEM_ACTION : <span class="hljs-comment">// add new item to listname : 'NAMELIST','CONTENT','STATUS' is required field </span>
-				<span class="hljs-variable">$func_name</span>=<span class="hljs-string">'addItem'</span>;
-				<span class="hljs-variable">$argsArr</span> = array_intersect_key(<span class="hljs-variable">$this</span>-&gt;requestArr, array_flip(<span class="hljs-keyword">array</span>(<span class="hljs-string">'CONTENT'</span>,<span class="hljs-string">'STATUS'</span>)));
-				ksort(<span class="hljs-variable">$argsArr</span>); <span class="hljs-comment">// args by alphaNum : CONTENT, STATUS :: same order than item properties object</span>
-				<span class="hljs-variable">$args</span> = <span class="hljs-keyword">array</span>(<span class="hljs-variable">$this</span>-&gt;requestArr[<span class="hljs-string">'NAMELIST'</span>],<span class="hljs-variable">$argsArr</span>);
-				<span class="hljs-keyword">break</span>;	
-				
-			<span class="hljs-keyword">case</span> actionType::DELETEITEM_ACTION : <span class="hljs-comment">// delete items to listname : 'NAMELIST','CONTENT' OR 'STATUS' are required field :: Delete all items with the speciic CONTENT or specific STATUS in list ( several items can have same name)</span>
-				<span class="hljs-variable">$func_name</span>=<span class="hljs-string">'delItem'</span>;
-				<span class="hljs-variable">$argsArr</span> = array_intersect_key(<span class="hljs-variable">$this</span>-&gt;requestArr, array_flip(<span class="hljs-keyword">array</span>(<span class="hljs-string">'CONTENT'</span>,<span class="hljs-string">'STATUS'</span>)));
-				ksort(<span class="hljs-variable">$argsArr</span>); <span class="hljs-comment">// args by alphaNum : CONTENT, STATUS :: same order than item properties object</span>
-				<span class="hljs-variable">$args</span> = <span class="hljs-keyword">array</span>(<span class="hljs-variable">$this</span>-&gt;requestArr[<span class="hljs-string">'NAMELIST'</span>],<span class="hljs-variable">$argsArr</span>);
-				<span class="hljs-keyword">break</span>;
-			<span class="hljs-keyword">case</span> actionType::GETLIST_ACTION : <span class="hljs-comment">// delete items to listname : 'NAMELIST','CONTENT' OR 'STATUS' are required field :: Delete all items with the speciic CONTENT or specific STATUS in list ( several items can have same name)</span>
-				<span class="hljs-variable">$func_name</span>=<span class="hljs-string">'getItem'</span>;
-				<span class="hljs-variable">$args</span> = <span class="hljs-keyword">array</span>(<span class="hljs-variable">$this</span>-&gt;requestArr[<span class="hljs-string">'NAMELIST'</span>],array_intersect_key(<span class="hljs-variable">$this</span>-&gt;requestArr, array_flip(<span class="hljs-keyword">array</span>(<span class="hljs-string">'STATUS'</span>))));
-				<span class="hljs-variable">$this</span>-&gt;type_content=<span class="hljs-string">'text/xml'</span>;
-				<span class="hljs-keyword">break</span>;	
-			<span class="hljs-keyword">case</span> actionType::MODIFYITEM_ACTION : <span class="hljs-comment">// modify items to listname : 'NAMELIST','CONTENT', 'STATUS' are required field</span>
-				<span class="hljs-variable">$func_name</span>=<span class="hljs-string">'modify'</span>;
-				<span class="hljs-variable">$argsArr</span> = array_intersect_key(<span class="hljs-variable">$this</span>-&gt;requestArr, array_flip(<span class="hljs-keyword">array</span>(<span class="hljs-string">'CONTENT'</span>,<span class="hljs-string">'STATUS'</span>,<span class="hljs-string">'OLDCONTENT'</span>)));
-				ksort(<span class="hljs-variable">$argsArr</span>); <span class="hljs-comment">// args by alphaNum : CONTENT, STATUS :: same order than item properties object</span>
-				<span class="hljs-variable">$args</span> = <span class="hljs-keyword">array</span>(<span class="hljs-variable">$this</span>-&gt;requestArr[<span class="hljs-string">'NAMELIST'</span>],<span class="hljs-variable">$argsArr</span>);
-				<span class="hljs-keyword">break</span>;				
-         }		
-
-         <span class="hljs-keyword">if</span> (DEBBUGAGE_MODE) var_dump(<span class="hljs-variable">$args</span>);
-         <span class="hljs-variable">$method</span> = <span class="hljs-keyword">array</span> (<span class="hljs-variable">$this</span>-&gt;handleLists,<span class="hljs-variable">$func_name</span>); <span class="hljs-comment">//  method with args to manage request</span>
-       	 <span class="hljs-keyword">return</span> <span class="hljs-keyword">self</span>::sendResponse(call_user_func_array(<span class="hljs-variable">$method</span>,<span class="hljs-variable">$args</span>),<span class="hljs-variable">$this</span>-&gt;type_content); <span class="hljs-comment">// call this method and receive return response</span>
+		<span class="hljs-variable">$uriArr</span> = explode(<span class="hljs-string">'/'</span>,substr(<span class="hljs-variable">$uri</span>,<span class="hljs-number">1</span>));
+		<span class="hljs-variable">$collections</span> = array_intersect(<span class="hljs-variable">$uriArr</span>, (<span class="hljs-variable">$this</span>-&gt;collectionArr)); <span class="hljs-comment">// only collections name</span>
+		<span class="hljs-variable">$collection_call</span> = array_pop(<span class="hljs-variable">$collections</span>); <span class="hljs-comment">// the first collection name is the collection call</span>
+		<span class="hljs-variable">$method</span> = strtolower(<span class="hljs-variable">$verb</span>.<span class="hljs-string">'_'</span>.<span class="hljs-variable">$collection_call</span>); <span class="hljs-comment">// method to call has format verb_collection </span>
+		<span class="hljs-keyword">if</span> (DEBBUGAGE_MODE) <span class="hljs-keyword">echo</span> <span class="hljs-variable">$method</span>;
+		<span class="hljs-variable">$args</span> = array_filter(<span class="hljs-variable">$uriArr</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(<span class="hljs-variable">$val</span>)</span> </span>{ <span class="hljs-comment">// filter for arguments only val begin with : </span>
+			<span class="hljs-variable">$exp</span> = <span class="hljs-string">'/^:/'</span>;
+			<span class="hljs-keyword">return</span> preg_match(<span class="hljs-variable">$exp</span>,<span class="hljs-variable">$val</span>); 
+		});
+		<span class="hljs-variable">$arg_str</span> = implode(<span class="hljs-string">''</span>,<span class="hljs-variable">$args</span>);
+		<span class="hljs-variable">$args</span> = explode(<span class="hljs-string">':'</span>,substr(<span class="hljs-variable">$arg_str</span>,<span class="hljs-number">1</span>));
+		<span class="hljs-keyword">if</span> (DEBBUGAGE_MODE) var_dump(<span class="hljs-variable">$args</span>);
+		<span class="hljs-keyword">return</span> (<span class="hljs-keyword">array</span>(<span class="hljs-variable">$method</span>,<span class="hljs-variable">$args</span>));
 	}
-
-	 
-	 <span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sendResponse</span><span class="hljs-params">(<span class="hljs-variable">$content</span>,<span class="hljs-variable">$responseType</span>)</span> </span>{ 
-	 	
-	 	<span class="hljs-variable">$Response</span> = <span class="hljs-keyword">new</span> response(<span class="hljs-variable">$content</span>,<span class="hljs-variable">$responseType</span>);
-	 	<span class="hljs-keyword">return</span> <span class="hljs-variable">$Response</span>-&gt;send();
-	 	
-	 } 
-	 
 	 
 }
+
+
 			
 
 <span class="hljs-preprocessor">?&gt;</span></pre></div></div>

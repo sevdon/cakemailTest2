@@ -30,11 +30,6 @@
                 </a>
               
                 
-                <a class="source" href="actionType.html">
-                  actionType.php
-                </a>
-              
-                
                 <a class="source" href="controllerApi.html">
                   controllerApi.php
                 </a>
@@ -52,11 +47,6 @@
                 
                 <a class="source" href="item.html">
                   item.php
-                </a>
-              
-                
-                <a class="source" href="listObjects.html">
-                  listObjects.php
                 </a>
               
                 
@@ -89,11 +79,6 @@
                   user.php
                 </a>
               
-                
-                <a class="source" href="validRequest.html">
-                  validRequest.php
-                </a>
-              
             </div>
           </div>
         </li>
@@ -123,157 +108,63 @@
  * API CakeMailTest TodoList V1.0
  * Author : Severine Donnay
  * public class handleListsStorageDB =&gt; manage list with DB Mysql
- * to create, delete, addItem, getItem, modifyItemValue 
  * 
- * <span class="hljs-doctag">@itemArr</span> : defined in parent class : list of todoLists array
+ * 
+ * (integer) function post_todolists()  add a new todolists - return id created
+ * get_todolists() list all todolists  	
+ * (integer) delete_todolists(id) delele a todolists with id - return id deleted
+ * put_items(id,content,status='') add item or updat status item in a todolist 
+ * get_items(id,statuts='') list of all items in todolist id - filter with status = done | default 
+ * delete_items(id,item_id) delete item defined by  item_id in totolist defined by id
  *  
- *  String create(string $namelist) =&gt; create a list identified by a name
- *  String delete(string $namelist) =&gt; delete a list identified by a name
- *  String addItem(string $namelist, array $itemsArr) =&gt; add new item in list the content of the itemArr Array
- *  lstTodo getItem(string $nameList,array $itemsArr) =&gt; get object lstTodo 
- *  String  delItem($nameList,$filters='') =&gt; del items in list defined by filters 
- *  String  modify
 */</span>
 
 <span class="hljs-keyword">namespace</span> <span class="hljs-title">CakeMailTest</span>\<span class="hljs-title">TodoList</span>;
 
-<span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">handleListsStorageDB</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">listObjects</span> </span>{
+<span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">handleListsStorageDB</span> </span>{
 
 	<span class="hljs-keyword">private</span> <span class="hljs-variable">$DB</span> = <span class="hljs-keyword">null</span>;
-	
-	
-
-	
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$DB_NAME</span>,<span class="hljs-variable">$DB_USER</span>,<span class="hljs-variable">$DB_PWD</span>,<span class="hljs-variable">$DB_HOST</span>)</span> </span>{
 		<span class="hljs-variable">$this</span>-&gt;DB = <span class="hljs-keyword">new</span> DataBase(<span class="hljs-variable">$DB_NAME</span>,<span class="hljs-variable">$DB_USER</span>,<span class="hljs-variable">$DB_PWD</span>,<span class="hljs-variable">$DB_HOST</span>);	
 	}
 	
 	<span class="hljs-comment">/*
-	 * function create =&gt; to create a new Todolist with a specific name to be identified
-	 * <span class="hljs-doctag">@var</span> nameList = String =&gt; name of the list 
+	 * function post_todolists() = add a new todolist 
 	 * 
 	 */</span>
 	
-	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">create</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>)</span> </span>{ 
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">post_todolists</span><span class="hljs-params">()</span> </span>{ 
 		
-	    <span class="hljs-keyword">if</span> (<span class="hljs-variable">$nameList</span>==<span class="hljs-string">''</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error create new list : Namelist is empty'</span>); 
-		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">self</span>::list_existInDB(<span class="hljs-variable">$nameList</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error create : a list with a same name '</span>.<span class="hljs-variable">$nameList</span>.<span class="hljs-string">' already exist'</span>); 
-		<span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"INSERT into lists (name,user_id) VALUES ('"</span>.DataBase::format_text_sql(<span class="hljs-variable">$nameList</span>).<span class="hljs-string">"',"</span>.user::ID.<span class="hljs-string">")"</span>,<span class="hljs-string">'INSERT'</span>);
-		<span class="hljs-keyword">return</span> responseMessage::MESSAGE_CREATE_SUCCESS;
+		<span class="hljs-variable">$id</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"INSERT into lists (datecrea,user_id) VALUES (Now(),"</span>.user::ID.<span class="hljs-string">")"</span>,<span class="hljs-string">'INSERT'</span>);
+		<span class="hljs-keyword">return</span> (<span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_CREATE_SUCCESS,<span class="hljs-keyword">array</span>(<span class="hljs-string">'id'</span>=&gt;<span class="hljs-variable">$id</span>)));
 		
 	} 
 	
-	<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">modifyLst</span> <span class="hljs-params">(<span class="hljs-variable">$nameList</span>,<span class="hljs-variable">$newNameList</span>)</span> </span>{
-		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$nameList</span>==<span class="hljs-string">''</span> || <span class="hljs-variable">$newNameList</span>==<span class="hljs-string">''</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error modify name list : Namelist is empty'</span>); 
-		<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">self</span>::list_existInDB(<span class="hljs-variable">$nameList</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error modify : no listname '</span>.<span class="hljs-variable">$nameList</span>.<span class="hljs-string">' found'</span>);
-		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">self</span>::list_existInDB(<span class="hljs-variable">$newNameList</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error modify : the new listname '</span>.<span class="hljs-variable">$nameList</span>.<span class="hljs-string">' already exist'</span>); 
-		<span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"UPDATE lists SET name='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$newNameList</span>).<span class="hljs-string">"' WHERE name='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$nameList</span>).<span class="hljs-string">"' "</span>,<span class="hljs-string">'UPDATE'</span>);
-		<span class="hljs-keyword">return</span> responseMessage::MESSAGE_MODIFY_SUCCESS;
-		
-	}
-	
 	<span class="hljs-comment">/*
-	 * modify(string $nameList, array $valuesArr)
-	 * modify a status, a content of an item
+	 * function delete_todolists($id) = delete a todolist 
 	 * 
 	 */</span>
 	
-	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">modify</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>, array <span class="hljs-variable">$valuesArr</span>)</span> </span>{
-		
-		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$nameList</span>==<span class="hljs-string">''</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error modify list : Namelist is empty'</span>); 
-		<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">self</span>::list_existInDB(<span class="hljs-variable">$nameList</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error modify : no listname '</span>.<span class="hljs-variable">$nameList</span>.<span class="hljs-string">' found'</span>); 
-		<span class="hljs-keyword">list</span>(<span class="hljs-variable">$list_id</span>,<span class="hljs-variable">$lstTodo</span>) = <span class="hljs-keyword">self</span>::generate_listItem_fromDB(<span class="hljs-variable">$nameList</span>);
-		<span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"UPDATE items SET status='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$valuesArr</span>[<span class="hljs-string">'STATUS'</span>]).<span class="hljs-string">"', content='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$valuesArr</span>[<span class="hljs-string">'CONTENT'</span>]).<span class="hljs-string">"' WHERE list_id=$list_id and content='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$valuesArr</span>[<span class="hljs-string">'OLDCONTENT'</span>]).<span class="hljs-string">"' "</span>,<span class="hljs-string">'UPDATE'</span>);
-		<span class="hljs-keyword">return</span> responseMessage::MESSAGE_MODIFYITEM_SUCCESS;
-		
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delete_todolists</span><span class="hljs-params">(<span class="hljs-variable">$id</span>)</span> </span>{
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$id</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error delete : missing id of todolist'</span>); 
+		<span class="hljs-variable">$id</span> = intval(<span class="hljs-variable">$id</span>);
+		<span class="hljs-variable">$count</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"DELETE from lists WHERE id = $id"</span>,<span class="hljs-string">'DELETE'</span>); <span class="hljs-comment">// items are deleted by Trigger on DB</span>
+		<span class="hljs-keyword">return</span> (<span class="hljs-variable">$count</span>&gt;<span class="hljs-number">0</span>) ? <span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_DEL_SUCCESS,<span class="hljs-keyword">array</span>(<span class="hljs-string">'id'</span>=&gt;<span class="hljs-variable">$id</span>)) :  <span class="hljs-keyword">array</span>(<span class="hljs-number">404</span>,responseMessage::MESSAGE_DEL_FAIL,<span class="hljs-keyword">null</span>);
 	}
 	
 	
 	<span class="hljs-comment">/*
-	 * function delete =&gt; to delete a Todolist identified with his name
-	 * <span class="hljs-doctag">@var</span> nameList = String =&gt; name of the list to be deleted
-	 * 
+	 * function put_items($id,$content,$status='')  add a new item with content in a todolist with id=id OR update an item in todolist with status
+	 * status take default_status if is empty or with an undefined value
 	 */</span>
 	
 	
-	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delete</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>)</span> </span>{
-		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$nameList</span>==<span class="hljs-string">''</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error delete list : Namelist is empty'</span>); 
-		<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">self</span>::list_existInDB(<span class="hljs-variable">$nameList</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error delete : no listname '</span>.<span class="hljs-variable">$nameList</span>.<span class="hljs-string">' found'</span>); 
-		<span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"DELETE from lists WHERE name = '"</span>.DataBase::format_text_sql(<span class="hljs-variable">$nameList</span>).<span class="hljs-string">"'"</span>,<span class="hljs-string">'DELETE'</span>); <span class="hljs-comment">// items are deleted by Trigger on DB</span>
-		<span class="hljs-keyword">return</span> responseMessage::MESSAGE_DEL_SUCCESS;
-	}
-	
-	<span class="hljs-comment">/*
-	 * function addItem =&gt; to add a new item in a specific list
-	 * <span class="hljs-doctag">@var</span> nameList = String =&gt; name of the list to add item
-	 * @ itemArr = Array =&gt; contain item values (content and status) - Ex : Array ('content'=&gt; 'task name to do','status'=&gt;'TODO')
-	 * return message
-	 */</span>
-	
-	
-	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addItem</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>,array <span class="hljs-variable">$itemsArr</span>)</span> </span>{ 
-		<span class="hljs-keyword">list</span>(<span class="hljs-variable">$list_id</span>,<span class="hljs-variable">$lstTodo</span>) = <span class="hljs-keyword">self</span>::generate_listItem_fromDB(<span class="hljs-variable">$nameList</span>);	
-		<span class="hljs-variable">$item</span>=<span class="hljs-variable">$lstTodo</span>-&gt;addItem(<span class="hljs-variable">$itemsArr</span>);	
-		<span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"INSERT into items (content,list_id,status) VALUES ('"</span>.DataBase::format_text_sql(<span class="hljs-variable">$item</span>-&gt;content).<span class="hljs-string">"',$list_id,'"</span>.DataBase::format_text_sql(<span class="hljs-variable">$item</span>-&gt;status).<span class="hljs-string">"')"</span>,<span class="hljs-string">'INSERT'</span>);
-		<span class="hljs-keyword">return</span> responseMessage::MESSAGE_ADDITEM_SUCCESS;
-	}	
-	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">put_items</span><span class="hljs-params">(<span class="hljs-variable">$id</span>,<span class="hljs-variable">$content</span>,<span class="hljs-variable">$status</span>=<span class="hljs-string">''</span>)</span> </span>{
 		
-	<span class="hljs-comment">/*
-	 * function getItem =&gt; to get an array with all items filtered by filters if defined
-	 * <span class="hljs-doctag">@var</span> nameList = String =&gt; name of the list to get items
-	 * <span class="hljs-doctag">@var</span> filter =&gt; filters 
-	 * 
-	 * return an Array of item objects
-	 */</span>
-	
-	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getItem</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>,<span class="hljs-variable">$filters</span>=<span class="hljs-string">''</span>)</span> </span>{
-		 <span class="hljs-keyword">list</span>(<span class="hljs-variable">$list_id</span>,<span class="hljs-variable">$lstTodo</span>) = <span class="hljs-keyword">self</span>::generate_listItem_fromDB(<span class="hljs-variable">$nameList</span>,<span class="hljs-variable">$filters</span>);
-		 <span class="hljs-keyword">return</span> <span class="hljs-variable">$lstTodo</span>;
-	} 
-	
-	<span class="hljs-comment">/*
-	 * BOOL function delItem =&gt; to del items in list defined by filters
-	 * <span class="hljs-doctag">@var</span> nameList = String =&gt; name of the list to delete items
-	 * <span class="hljs-doctag">@var</span> filters =&gt; Array of filters to delete ex : array ('content'=&gt;'buy a car') OR ('status'=&gt;'TODO')
-	 * return message
-	 * 
-	 */</span>
-	
-	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delItem</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>,<span class="hljs-variable">$filters</span>)</span> </span>{
-		 <span class="hljs-keyword">list</span>(<span class="hljs-variable">$list_id</span>,<span class="hljs-variable">$lstTodo</span>) = <span class="hljs-keyword">self</span>::generate_listItem_fromDB(<span class="hljs-variable">$nameList</span>,<span class="hljs-variable">$filters</span>);
-		 <span class="hljs-variable">$filters_sql</span> = DataBase::generate_filter_sql(<span class="hljs-variable">$filters</span>);	
-		 <span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"DELETE FROM items WHERE list_id=$list_id  $filters_sql"</span>,<span class="hljs-string">'DELETE'</span>);
-		 <span class="hljs-keyword">return</span> responseMessage::MESSAGE_DELITEM_SUCCESS;
-	}
-	
-	
-	<span class="hljs-comment">/*
-	 * BOOL function list_existInDB( string $nameList) 
-	 * Check if a lisf with namelist already exist in DB 
-	 * return a BOOL
-	 */</span>
-		
-	
-	<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">list_existInDB</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>)</span> </span>{
-		
-		<span class="hljs-variable">$listArr</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT lists.id FROM lists WHERE name='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$nameList</span>).<span class="hljs-string">"' order by id DESC limit 0,1"</span>); 
-		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$listArr</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>]==<span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
-		<span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-		
-	}
-	
-	
-	<span class="hljs-comment">/*
-	 * function generate_listItem_fromDB(string $nameList,array $filterArr) 
-	 * Generate  one object list defined by listname from DB record
-	 * Generate all items in this list
-	 * Return an array int $list_id,lstTodo $Object
-	 * 
-	 * $filterArr : associatif array with key='value' to filter in Where clause Request
-	 */</span>
-	
-	<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">generate_listItem_fromDB</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>,<span class="hljs-variable">$filters</span>=<span class="hljs-string">''</span>)</span> </span>{</pre></div></div>
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$id</span>) || <span class="hljs-keyword">empty</span>(<span class="hljs-variable">$content</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error put item : missing id todolist or content item'</span>); 
+		<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">self</span>::list_existInDB(<span class="hljs-variable">$id</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error put item : no todolist '</span>.<span class="hljs-variable">$id</span>.<span class="hljs-string">' found'</span>);
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$status</span>==<span class="hljs-string">''</span> || !defined(<span class="hljs-string">'CakeMailTest\TodoList\statusItem::'</span>.strtoupper(<span class="hljs-variable">$status</span>).<span class="hljs-string">'_STATUS'</span>)) <span class="hljs-variable">$status</span> = statusItem::DEFAULT_STATUS;
+		 <span class="hljs-variable">$id</span> = intval(<span class="hljs-variable">$id</span>);</pre></div></div>
             
         </li>
         
@@ -284,37 +175,116 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Request for this nameList in DB</p>
+              <p>update status</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		
-		<span class="hljs-variable">$listArr</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT lists.id FROM lists WHERE name='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$nameList</span>).<span class="hljs-string">"' order by id DESC limit 0,1"</span>); 
-		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$listArr</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>]==<span class="hljs-number">0</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error : name list not found'</span>);
-		<span class="hljs-variable">$id</span> = <span class="hljs-variable">$listArr</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'id'</span>];
-		<span class="hljs-variable">$lstTodo</span> = <span class="hljs-keyword">parent</span>::create(<span class="hljs-variable">$nameList</span>); <span class="hljs-comment">// Create a new object of listTodo class</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>Request for items nameList in DB</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>		
-		<span class="hljs-keyword">if</span> (is_array(<span class="hljs-variable">$filters</span>)) <span class="hljs-variable">$filters</span> = DataBase::generate_filter_sql(<span class="hljs-variable">$filters</span>);
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-variable">$count</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"UPDATE items SET status='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$status</span>).<span class="hljs-string">"' WHERE content ='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$content</span>).<span class="hljs-string">"' AND list_id=$id"</span>,<span class="hljs-string">'UPDATE'</span>);
+		<span class="hljs-variable">$rs</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT id FROM items WHERE content ='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$content</span>).<span class="hljs-string">"' AND list_id=$id order by id DESC limit 0,1"</span>); 
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$count</span>&gt;<span class="hljs-number">0</span> || <span class="hljs-variable">$rs</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>]&gt;<span class="hljs-number">0</span>) { <span class="hljs-comment">// update return</span>
+			<span class="hljs-variable">$data</span> = json_decode(json_encode(<span class="hljs-keyword">new</span> item(<span class="hljs-variable">$rs</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'id'</span>],<span class="hljs-variable">$content</span>,<span class="hljs-variable">$status</span>)),<span class="hljs-keyword">true</span>);
+			<span class="hljs-keyword">return</span> (<span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_UPDATEITEM_SUCCESS,<span class="hljs-variable">$data</span>));
+		} <span class="hljs-keyword">else</span> {	<span class="hljs-comment">// insert a new item</span>
+			<span class="hljs-variable">$id_item</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"INSERT into items (content,list_id,status) VALUES ('"</span>.DataBase::format_text_sql(<span class="hljs-variable">$content</span>).<span class="hljs-string">"',$id,'"</span>.DataBase::format_text_sql(<span class="hljs-variable">$status</span>).<span class="hljs-string">"')"</span>,<span class="hljs-string">'INSERT'</span>);
+			<span class="hljs-variable">$data</span> = json_decode(json_encode(<span class="hljs-keyword">new</span> item(<span class="hljs-variable">$id_item</span>,<span class="hljs-variable">$content</span>,<span class="hljs-variable">$status</span>)),<span class="hljs-keyword">true</span>);
+			<span class="hljs-keyword">return</span> (<span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_ADDITEM_SUCCESS,<span class="hljs-variable">$data</span>));
+		} 	
+	}	
+	
+	
+	<span class="hljs-comment">/*  
+	 *  function delete_items: delete an item id_item in todolist id 
+	 * 
+	 */</span>
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delete_items</span><span class="hljs-params">(<span class="hljs-variable">$id</span>,<span class="hljs-variable">$id_item</span>)</span> </span>{
+		 <span class="hljs-keyword">if</span> (<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$id</span>) || <span class="hljs-keyword">empty</span>(<span class="hljs-variable">$id_item</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error delete item : missing id todolist or id item'</span>);
+		 <span class="hljs-variable">$id</span> = intval(<span class="hljs-variable">$id</span>);
+		 <span class="hljs-variable">$id_item</span> = intval(<span class="hljs-variable">$id_item</span>);
+		 <span class="hljs-variable">$count</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;prepareAndExecute(<span class="hljs-string">"DELETE FROM items WHERE list_id=$id AND id=$id_item"</span>,<span class="hljs-string">'DELETE'</span>);
+		 <span class="hljs-keyword">return</span> (<span class="hljs-variable">$count</span>&gt;<span class="hljs-number">0</span>) ? <span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_DELITEM_SUCCESS,<span class="hljs-keyword">array</span>(<span class="hljs-string">'id'</span>=&gt;<span class="hljs-variable">$id</span>,<span class="hljs-string">'id_item'</span>=&gt;<span class="hljs-variable">$id_item</span>)) :  <span class="hljs-keyword">array</span>(<span class="hljs-number">404</span>,responseMessage::MESSAGE_DELITEM_FAIL,<span class="hljs-keyword">null</span>);
+	}
+	
+	
+	
+	
 		
-		<span class="hljs-variable">$listArr</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT items.content, items.status FROM items WHERE list_id=$id $filters order by id DESC"</span>); 
+	<span class="hljs-comment">/*
+	 * function get_items(id,status)
+	 * return all item in selected todolist by id
+	 * filter by status if defined
+	 */</span>
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_items</span><span class="hljs-params">(<span class="hljs-variable">$id</span>,<span class="hljs-variable">$status</span>=<span class="hljs-string">''</span>)</span> </span>{
+		 <span class="hljs-keyword">if</span> (<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$id</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error get items : missing id of todolist'</span>); 
+		 <span class="hljs-variable">$id</span> = intval(<span class="hljs-variable">$id</span>);
+		 (<span class="hljs-variable">$status</span> !=<span class="hljs-string">''</span>) ? <span class="hljs-variable">$filters</span> = <span class="hljs-string">" AND status='"</span>.DataBase::format_text_sql(<span class="hljs-variable">$status</span>).<span class="hljs-string">"' "</span>: <span class="hljs-variable">$filters</span>=<span class="hljs-string">''</span>; 
+		 <span class="hljs-variable">$data</span> = json_decode(json_encode(<span class="hljs-keyword">self</span>::generate_listItem_fromDB(<span class="hljs-variable">$id</span>,<span class="hljs-variable">$filters</span>)));
+		 <span class="hljs-keyword">return</span> (<span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_GETITEM_SUCCESS,<span class="hljs-variable">$data</span>));
+	} 
+	
+	
+	<span class="hljs-comment">/*
+	 * function get_todolists()
+	 * return all todolist 
+	 * 
+	 */</span>
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_todolists</span><span class="hljs-params">()</span> </span>{
+		
+		 <span class="hljs-variable">$rs</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT lists.id, DATE_FORMAT(lists.datecrea,'%m-%d-%Y') as date FROM lists order by id ASC"</span>); 	 
+		 <span class="hljs-variable">$data</span> = json_decode(json_encode(<span class="hljs-variable">$rs</span>),<span class="hljs-keyword">true</span>);	
+		 <span class="hljs-keyword">return</span> (<span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_GETLIST_SUCCESS,<span class="hljs-variable">$data</span>));
+	} 
+	
+	
+	
+	<span class="hljs-comment">/*
+	 * function generate_listItem_fromDB(string $nameList,array $filterArr) 
+	 * Generate  one object list defined by listname from DB record
+	 * Generate all items in this list
+	 * Return an array int $list_id,lstTodo $Object
+	 * 
+	 */</span>
+	
+	<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">generate_listItem_fromDB</span><span class="hljs-params">(<span class="hljs-variable">$id</span>,<span class="hljs-variable">$filters</span>=<span class="hljs-string">''</span>)</span> </span>{
+		
+		<span class="hljs-variable">$id</span> = intval(<span class="hljs-variable">$id</span>);
+		<span class="hljs-variable">$listArr</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT lists.id FROM lists WHERE id=$id order by id DESC limit 0,1"</span>); 
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$listArr</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>]==<span class="hljs-number">0</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error : list not found'</span>);
+		<span class="hljs-variable">$lstTodo</span> = <span class="hljs-keyword">new</span> listTodo(<span class="hljs-variable">$id</span>); <span class="hljs-comment">// Create a new object of listTodo class</span>
+		
+		<span class="hljs-variable">$listArr</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT items.content, items.status,items.id FROM items WHERE list_id=$id $filters order by id DESC"</span>); 
 		<span class="hljs-keyword">for</span> (<span class="hljs-variable">$i</span>=<span class="hljs-number">0</span>;<span class="hljs-variable">$i</span>&lt;<span class="hljs-variable">$listArr</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>];<span class="hljs-variable">$i</span>++) {
-			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$listArr</span>[<span class="hljs-variable">$i</span>][<span class="hljs-string">'content'</span>]!=<span class="hljs-string">''</span>) <span class="hljs-variable">$lstTodo</span>-&gt;addItem(<span class="hljs-keyword">array</span>(<span class="hljs-string">'content'</span>=&gt;<span class="hljs-variable">$listArr</span>[<span class="hljs-variable">$i</span>][<span class="hljs-string">'content'</span>],<span class="hljs-string">'status'</span>=&gt;<span class="hljs-variable">$listArr</span>[<span class="hljs-variable">$i</span>][<span class="hljs-string">'status'</span>]));	
+			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$listArr</span>[<span class="hljs-variable">$i</span>][<span class="hljs-string">'content'</span>]!=<span class="hljs-string">''</span>) <span class="hljs-variable">$lstTodo</span>-&gt;addItem(<span class="hljs-keyword">array</span>(<span class="hljs-string">'id'</span>=&gt;<span class="hljs-variable">$listArr</span>[<span class="hljs-variable">$i</span>][<span class="hljs-string">'id'</span>],<span class="hljs-string">'content'</span>=&gt;<span class="hljs-variable">$listArr</span>[<span class="hljs-variable">$i</span>][<span class="hljs-string">'content'</span>],<span class="hljs-string">'status'</span>=&gt;<span class="hljs-variable">$listArr</span>[<span class="hljs-variable">$i</span>][<span class="hljs-string">'status'</span>]));	
 		}
-		<span class="hljs-keyword">return</span> <span class="hljs-keyword">array</span>(<span class="hljs-variable">$id</span>,<span class="hljs-variable">$lstTodo</span>);	
+		<span class="hljs-keyword">return</span> <span class="hljs-variable">$lstTodo</span>;	
+	}
+	
+<span class="hljs-comment">/*
+	 * BOOL function list_existInDB( $id) 
+	 * Check if a lisf with id already exist in DB 
+	 * return a BOOL
+	 */</span>
+		
+	
+	<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">list_existInDB</span><span class="hljs-params">(<span class="hljs-variable">$id</span>)</span> </span>{
+		<span class="hljs-variable">$id</span> = intval(<span class="hljs-variable">$id</span>);
+		<span class="hljs-variable">$listArr</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT lists.id FROM lists WHERE id=$id order by id DESC limit 0,1"</span>); 
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$listArr</span>[<span class="hljs-number">0</span>][<span class="hljs-string">'count_row'</span>]==<span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+		
+	}
+	
+	
+	
+	<span class="hljs-comment">/*
+	 * catch all calls to undefined method 
+	 * 
+	 */</span>
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__call</span><span class="hljs-params">(<span class="hljs-variable">$name</span>, <span class="hljs-variable">$arguments</span>)</span> </span>{ 
+		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionToDoList (<span class="hljs-string">'Error call : method '</span>.<span class="hljs-variable">$name</span>.<span class="hljs-string">' doesn\'t exist'</span>);	
 	}
 	
 	

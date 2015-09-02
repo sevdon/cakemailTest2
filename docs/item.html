@@ -30,11 +30,6 @@
                 </a>
               
                 
-                <a class="source" href="actionType.html">
-                  actionType.php
-                </a>
-              
-                
                 <a class="source" href="controllerApi.html">
                   controllerApi.php
                 </a>
@@ -52,11 +47,6 @@
                 
                 <a class="source" href="item.html">
                   item.php
-                </a>
-              
-                
-                <a class="source" href="listObjects.html">
-                  listObjects.php
                 </a>
               
                 
@@ -87,11 +77,6 @@
                 
                 <a class="source" href="user.html">
                   user.php
-                </a>
-              
-                
-                <a class="source" href="validRequest.html">
-                  validRequest.php
                 </a>
               
             </div>
@@ -128,12 +113,16 @@
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">item</span> </span>{
 	
+	<span class="hljs-keyword">public</span> <span class="hljs-variable">$id</span> = <span class="hljs-keyword">null</span>;
 	<span class="hljs-keyword">public</span> <span class="hljs-variable">$content</span> = <span class="hljs-keyword">null</span>;
 	<span class="hljs-keyword">public</span> <span class="hljs-variable">$status</span> = <span class="hljs-keyword">null</span>;
 	
-	<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$content</span>,<span class="hljs-variable">$status</span>=statusItem::DEFAULT_STATUS)</span> </span>{
+	<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$id</span>,<span class="hljs-variable">$content</span>,<span class="hljs-variable">$status</span>=statusItem::DEFAULT_STATUS)</span> </span>{
+		
+		<span class="hljs-variable">$this</span>-&gt;id = <span class="hljs-variable">$id</span>;
 		<span class="hljs-variable">$this</span>-&gt;content = <span class="hljs-variable">$content</span>;
-		<span class="hljs-variable">$this</span>-&gt;status = <span class="hljs-variable">$status</span>;	
+		<span class="hljs-variable">$this</span>-&gt;status = <span class="hljs-variable">$status</span>;
+			
 	}
 	
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">set_status</span><span class="hljs-params">(<span class="hljs-variable">$status</span>)</span> </span>{

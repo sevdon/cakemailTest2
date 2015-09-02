@@ -30,11 +30,6 @@
                 </a>
               
                 
-                <a class="source" href="actionType.html">
-                  actionType.php
-                </a>
-              
-                
                 <a class="source" href="controllerApi.html">
                   controllerApi.php
                 </a>
@@ -52,11 +47,6 @@
                 
                 <a class="source" href="item.html">
                   item.php
-                </a>
-              
-                
-                <a class="source" href="listObjects.html">
-                  listObjects.php
                 </a>
               
                 
@@ -89,11 +79,6 @@
                   user.php
                 </a>
               
-                
-                <a class="source" href="validRequest.html">
-                  validRequest.php
-                </a>
-              
             </div>
           </div>
         </li>
@@ -120,7 +105,7 @@
             
             <div class="content"><div class='highlight'><pre><span class="hljs-preprocessor">&lt;?php</span>
 <span class="hljs-comment">/* 
- * API CakeMailTest TodoList V1.0
+ * API CakeMailTest TodoList V2.0
  * Author : Severine Donnay
  * Class response : response to send
  * 
@@ -128,47 +113,48 @@
 <span class="hljs-keyword">namespace</span> <span class="hljs-title">CakeMailTest</span>\<span class="hljs-title">TodoList</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">response</span> </span>{
 	
-	<span class="hljs-keyword">private</span> <span class="hljs-variable">$content</span>=<span class="hljs-keyword">array</span>();
-	<span class="hljs-keyword">private</span> <span class="hljs-variable">$type_content</span>=<span class="hljs-string">'text/html'</span>;
+	<span class="hljs-keyword">const</span>   CONTENT_TYPE =<span class="hljs-string">'application/json'</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$status_message</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$status</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$data</span>;
+	<span class="hljs-keyword">private</span> <span class="hljs-variable">$authorization</span> = <span class="hljs-keyword">false</span>;
 	
-		<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$content</span>,<span class="hljs-variable">$type_content</span>)</span> </span>{
-			
-			<span class="hljs-variable">$this</span>-&gt;content=<span class="hljs-variable">$content</span>;
-			<span class="hljs-variable">$this</span>-&gt;type_content=<span class="hljs-variable">$type_content</span>;
+		<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">()</span> </span>{
+
+		}
+		
+		<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">set_content</span><span class="hljs-params">(<span class="hljs-variable">$status</span>,<span class="hljs-variable">$status_message</span>,<span class="hljs-variable">$data</span>)</span> </span>{
+			<span class="hljs-variable">$this</span>-&gt;data=<span class="hljs-variable">$data</span>;
+			<span class="hljs-variable">$this</span>-&gt;status=<span class="hljs-variable">$status</span>;
+			<span class="hljs-variable">$this</span>-&gt;status_message=<span class="hljs-variable">$status_message</span>;
 		}
 		
 		<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">send</span><span class="hljs-params">()</span> </span>{
-			<span class="hljs-variable">$content</span> = <span class="hljs-variable">$this</span>-&gt;type_content;
-			header(<span class="hljs-string">"Content-Type: $content"</span>);
+			
+			<span class="hljs-variable">$content_type</span> = <span class="hljs-keyword">self</span>::CONTENT_TYPE;
+			<span class="hljs-variable">$status</span> = <span class="hljs-variable">$this</span>-&gt;status;
+			<span class="hljs-variable">$status_message</span> = <span class="hljs-variable">$this</span>-&gt;status_message;
+			
+			<span class="hljs-variable">$responseArr</span>[<span class="hljs-string">'status'</span>]=<span class="hljs-variable">$status</span>;
+			<span class="hljs-variable">$responseArr</span>[<span class="hljs-string">'status_message'</span>]=<span class="hljs-variable">$status_message</span>;
+			 
+			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;data !=<span class="hljs-keyword">null</span>) <span class="hljs-variable">$responseArr</span>[<span class="hljs-string">'data'</span>] = json_decode(json_encode(<span class="hljs-variable">$this</span>-&gt;data),<span class="hljs-keyword">true</span>); <span class="hljs-comment">// transform to array</span>
+			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;authorization) header(<span class="hljs-string">"HTTP/1.1 : $status $status_message"</span>);
+			<span class="hljs-keyword">else</span> {
+				header(<span class="hljs-string">'WWW-Authenticate: Token'</span>);
+				header(<span class="hljs-string">'HTTP/1.0 401 Unauthorized'</span>);
+			}
+			
+			header(<span class="hljs-string">"Content-Type: $content_type"</span>);
 			header(<span class="hljs-string">"Cache-Control: no-cache, must-revalidate"</span>);
-			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;type_content==<span class="hljs-string">'text/html'</span>) <span class="hljs-keyword">return</span> <span class="hljs-variable">$this</span>-&gt;content;
-			<span class="hljs-keyword">elseif</span> (<span class="hljs-variable">$this</span>-&gt;type_content==<span class="hljs-string">'text/xml'</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">self</span>::generate_xml(<span class="hljs-variable">$this</span>-&gt;content);
-		}
-		
-		
-		<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">generate_xml</span><span class="hljs-params">(<span class="hljs-variable">$contentObject</span>)</span> </span>{
-			
-			<span class="hljs-variable">$contentArr</span> = json_decode(json_encode(<span class="hljs-variable">$contentObject</span>),<span class="hljs-keyword">true</span>);
-			<span class="hljs-variable">$xml_data</span> = <span class="hljs-keyword">new</span> \SimpleXMLElement(<span class="hljs-string">'&lt;?xml version="1.0" encoding="UTF-8" ?&gt;&lt;Todolist&gt;&lt;/Todolist&gt;'</span>);
-			<span class="hljs-keyword">self</span>::array_to_xml(<span class="hljs-variable">$contentArr</span>,<span class="hljs-variable">$xml_data</span>);
-			<span class="hljs-keyword">return</span> <span class="hljs-variable">$xml_data</span>-&gt;asXML();	
+			<span class="hljs-keyword">echo</span> <span class="hljs-variable">$this</span>-&gt;authorization;
+			<span class="hljs-keyword">return</span> json_encode(<span class="hljs-variable">$responseArr</span>);
 			
 		}
 		
-		
-		<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">array_to_xml</span><span class="hljs-params">( <span class="hljs-variable">$data</span>,&amp;<span class="hljs-variable">$xml_data</span> )</span> </span>{
-			
-   		 <span class="hljs-keyword">foreach</span>( <span class="hljs-variable">$data</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$key</span> =&gt; <span class="hljs-variable">$value</span> ) {
-   		 	
-	        	<span class="hljs-keyword">if</span> (is_array(<span class="hljs-variable">$value</span>)) {
-	            	<span class="hljs-keyword">if</span>( is_numeric(<span class="hljs-variable">$key</span>)) <span class="hljs-variable">$key</span> = <span class="hljs-string">'item'</span>.<span class="hljs-variable">$key</span>; 
-	            	<span class="hljs-variable">$subnode</span> = <span class="hljs-variable">$xml_data</span>-&gt;addChild(<span class="hljs-variable">$key</span>);
-	            	<span class="hljs-keyword">self</span>::array_to_xml(<span class="hljs-variable">$value</span>, <span class="hljs-variable">$subnode</span>);
-	        	} <span class="hljs-keyword">else</span> {
-	            	<span class="hljs-variable">$xml_data</span>-&gt;addChild(<span class="hljs-variable">$key</span>,htmlspecialchars(<span class="hljs-variable">$value</span>));
-	       		 }
-    	 }
-}
+		<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">authorization</span><span class="hljs-params">(<span class="hljs-variable">$bool</span>)</span> </span>{
+			<span class="hljs-variable">$this</span>-&gt;authorization = <span class="hljs-variable">$bool</span>;
+		}
 
 
 		

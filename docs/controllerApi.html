@@ -30,11 +30,6 @@
                 </a>
               
                 
-                <a class="source" href="actionType.html">
-                  actionType.php
-                </a>
-              
-                
                 <a class="source" href="controllerApi.html">
                   controllerApi.php
                 </a>
@@ -52,11 +47,6 @@
                 
                 <a class="source" href="item.html">
                   item.php
-                </a>
-              
-                
-                <a class="source" href="listObjects.html">
-                  listObjects.php
                 </a>
               
                 
@@ -87,11 +77,6 @@
                 
                 <a class="source" href="user.html">
                   user.php
-                </a>
-              
-                
-                <a class="source" href="validRequest.html">
-                  validRequest.php
                 </a>
               
             </div>
@@ -130,17 +115,21 @@
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">controllerApi</span> </span>{
 	
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">request</span><span class="hljs-params">()</span> </span>{
-		<span class="hljs-keyword">if</span> (version_compare(PHP_VERSION, <span class="hljs-string">'5.4.0'</span>, <span class="hljs-string">'&lt;'</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionTodoList(<span class="hljs-string">'The CakeMailTest TodoList Api requires version 5.4 or higher .'</span>);
-		<span class="hljs-variable">$requestArr</span> = (METHOD_TYPE==<span class="hljs-string">'POST'</span>) ? filter_input_array(INPUT_POST) : filter_input_array(INPUT_GET); <span class="hljs-comment">// GET ALL POST or GET VALUES</span>
-		<span class="hljs-keyword">if</span> (validRequest::mandatoryField(<span class="hljs-variable">$requestArr</span>)) {
+		<span class="hljs-variable">$reponse</span> = <span class="hljs-keyword">new</span> response();
+		<span class="hljs-keyword">if</span> (user::authorization()) {
+			<span class="hljs-variable">$reponse</span>-&gt;authorization(<span class="hljs-keyword">true</span>);
 			<span class="hljs-keyword">try</span> {
-				<span class="hljs-variable">$Request</span> = <span class="hljs-keyword">new</span> request(<span class="hljs-variable">$requestArr</span>,<span class="hljs-variable">$requestArr</span>[<span class="hljs-string">'ACTIONTYPE'</span>]); <span class="hljs-comment">// send Request</span>
-				<span class="hljs-keyword">echo</span> <span class="hljs-variable">$Request</span>-&gt;getResponse();   	 				
+				<span class="hljs-variable">$request</span> = <span class="hljs-keyword">new</span> request(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_URI'</span>],<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_METHOD'</span>]); <span class="hljs-comment">// send Request	</span>
+				call_user_func_array(<span class="hljs-keyword">array</span>(<span class="hljs-variable">$reponse</span>,<span class="hljs-string">'set_content'</span>),<span class="hljs-variable">$request</span>-&gt;getResponse());			
 			} <span class="hljs-keyword">catch</span> (ExceptionTodoList <span class="hljs-variable">$e</span>) {
-				<span class="hljs-keyword">echo</span> <span class="hljs-variable">$e</span>-&gt;getMessage();
+				<span class="hljs-variable">$reponse</span>-&gt;set_content(<span class="hljs-string">'404'</span>,<span class="hljs-variable">$e</span>-&gt;getMessage(),<span class="hljs-keyword">null</span>);
+				<span class="hljs-keyword">echo</span> <span class="hljs-variable">$reponse</span>-&gt;send();
 				<span class="hljs-keyword">exit</span>();
 			}	
+		} <span class="hljs-keyword">else</span> {  
+			<span class="hljs-variable">$reponse</span>-&gt;set_content(<span class="hljs-string">'401'</span>,errorApi::AUTHENTICATION_ERR,<span class="hljs-keyword">null</span>);
 		}				
+		<span class="hljs-keyword">echo</span> <span class="hljs-variable">$reponse</span>-&gt;send();
 	}
 }
 

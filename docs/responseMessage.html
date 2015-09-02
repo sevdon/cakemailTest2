@@ -30,11 +30,6 @@
                 </a>
               
                 
-                <a class="source" href="actionType.html">
-                  actionType.php
-                </a>
-              
-                
                 <a class="source" href="controllerApi.html">
                   controllerApi.php
                 </a>
@@ -52,11 +47,6 @@
                 
                 <a class="source" href="item.html">
                   item.php
-                </a>
-              
-                
-                <a class="source" href="listObjects.html">
-                  listObjects.php
                 </a>
               
                 
@@ -89,11 +79,6 @@
                   user.php
                 </a>
               
-                
-                <a class="source" href="validRequest.html">
-                  validRequest.php
-                </a>
-              
             </div>
           </div>
         </li>
@@ -120,7 +105,7 @@
             
             <div class="content"><div class='highlight'><pre><span class="hljs-preprocessor">&lt;?php</span>
 <span class="hljs-comment">/*
- * API CakeMailTest TodoList V1.0
+ * API CakeMailTest TodoList V2.0
  * Author : Severine Donnay
  * abstract class responseMessage 
  * 
@@ -133,8 +118,12 @@
 	<span class="hljs-keyword">const</span> MESSAGE_MODIFY_SUCCESS=<span class="hljs-string">'ToDolist was modified successfully'</span>;
 	<span class="hljs-keyword">const</span> MESSAGE_DEL_SUCCESS=<span class="hljs-string">'ToDolist was deleted successfully'</span>;
 	<span class="hljs-keyword">const</span> MESSAGE_ADDITEM_SUCCESS=<span class="hljs-string">'New item was added successfully'</span>;
-	<span class="hljs-keyword">const</span> MESSAGE_MODIFYITEM_SUCCESS=<span class="hljs-string">'Item was modified successfully'</span>;
+	<span class="hljs-keyword">const</span> MESSAGE_GETITEM_SUCCESS=<span class="hljs-string">'Items was listed sucessfully'</span>;
+	<span class="hljs-keyword">const</span> MESSAGE_GETLIST_SUCCESS=<span class="hljs-string">'Todolist was listed sucessfully'</span>;
+	<span class="hljs-keyword">const</span> MESSAGE_UPDATEITEM_SUCCESS=<span class="hljs-string">'Item status was modified successfully'</span>;
 	<span class="hljs-keyword">const</span> MESSAGE_DELITEM_SUCCESS=<span class="hljs-string">'Item was deleted successfully'</span>;	
+	<span class="hljs-keyword">const</span> MESSAGE_DELITEM_FAIL=<span class="hljs-string">'No item deleted : id and item-id not found'</span>;
+	<span class="hljs-keyword">const</span> MESSAGE_DEL_FAIL=<span class="hljs-string">'No todolist deleted : id not found'</span>;
 		
 } 
 

@@ -30,11 +30,6 @@
                 </a>
               
                 
-                <a class="source" href="actionType.html">
-                  actionType.php
-                </a>
-              
-                
                 <a class="source" href="controllerApi.html">
                   controllerApi.php
                 </a>
@@ -52,11 +47,6 @@
                 
                 <a class="source" href="item.html">
                   item.php
-                </a>
-              
-                
-                <a class="source" href="listObjects.html">
-                  listObjects.php
                 </a>
               
                 
@@ -87,11 +77,6 @@
                 
                 <a class="source" href="user.html">
                   user.php
-                </a>
-              
-                
-                <a class="source" href="validRequest.html">
-                  validRequest.php
                 </a>
               
             </div>
@@ -130,12 +115,13 @@
 
 <span class="hljs-keyword">namespace</span> <span class="hljs-title">CakeMailTest</span>\<span class="hljs-title">TodoList</span>;
 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">listTodo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">listObjects</span> </span>{
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">listTodo</span>  </span>{
 	
-	<span class="hljs-keyword">public</span> <span class="hljs-variable">$nameList</span> = <span class="hljs-keyword">null</span>;
+	<span class="hljs-keyword">public</span> <span class="hljs-variable">$id</span>=<span class="hljs-keyword">null</span>;
+	<span class="hljs-keyword">public</span> <span class="hljs-variable">$items</span>=<span class="hljs-keyword">array</span>();
 	
-	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$nameList</span>)</span> </span>{
-		<span class="hljs-variable">$this</span>-&gt;nameList=<span class="hljs-variable">$nameList</span>;
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(<span class="hljs-variable">$id</span>)</span> </span>{
+		<span class="hljs-variable">$this</span>-&gt;id=<span class="hljs-variable">$id</span>;
 	}
 	
 	
@@ -172,9 +158,9 @@
 	
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getItem</span><span class="hljs-params">(array <span class="hljs-variable">$filter</span>)</span> </span>{
 
-		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$filter</span>==<span class="hljs-string">''</span>) <span class="hljs-keyword">return</span> <span class="hljs-variable">$this</span>-&gt;listsArr;
-		<span class="hljs-keyword">elseif</span> (<span class="hljs-keyword">parent</span>::arrayKeyExists(<span class="hljs-string">'status'</span>, <span class="hljs-variable">$filter</span>) &amp;&amp; <span class="hljs-variable">$filter</span>[<span class="hljs-string">'status'</span>]==statusItem::DEFAULT_STATUS) <span class="hljs-keyword">return</span> array_filter(<span class="hljs-variable">$this</span>-&gt;listsArr,<span class="hljs-string">'self::filter_status_default'</span>);
-		<span class="hljs-keyword">elseif</span> (<span class="hljs-keyword">parent</span>::arrayKeyExists(<span class="hljs-string">'status'</span>, <span class="hljs-variable">$filter</span>) &amp;&amp; <span class="hljs-variable">$filter</span>[<span class="hljs-string">'status'</span>]==statusItem::DEFAULT_DONE) <span class="hljs-keyword">return</span> array_filter(<span class="hljs-variable">$this</span>-&gt;listsArr,<span class="hljs-string">'self::filter_status_done'</span>);
+		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$filter</span>==<span class="hljs-string">''</span>) <span class="hljs-keyword">return</span> <span class="hljs-variable">$this</span>-&gt;items;
+		<span class="hljs-keyword">elseif</span> (<span class="hljs-keyword">parent</span>::arrayKeyExists(<span class="hljs-string">'status'</span>, <span class="hljs-variable">$filter</span>) &amp;&amp; <span class="hljs-variable">$filter</span>[<span class="hljs-string">'status'</span>]==statusItem::DEFAULT_STATUS) <span class="hljs-keyword">return</span> array_filter(<span class="hljs-variable">$this</span>-&gt;items,<span class="hljs-string">'self::filter_status_default'</span>);
+		<span class="hljs-keyword">elseif</span> (<span class="hljs-keyword">parent</span>::arrayKeyExists(<span class="hljs-string">'status'</span>, <span class="hljs-variable">$filter</span>) &amp;&amp; <span class="hljs-variable">$filter</span>[<span class="hljs-string">'status'</span>]==statusItem::DEFAULT_DONE) <span class="hljs-keyword">return</span> array_filter(<span class="hljs-variable">$this</span>-&gt;items,<span class="hljs-string">'self::filter_status_done'</span>);
 		<span class="hljs-keyword">else</span> <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ExceptionTodoList(<span class="hljs-string">'Error : filters no defined'</span>);
 		
 	}
@@ -190,11 +176,9 @@
 			<span class="hljs-variable">$args</span> = array_values(<span class="hljs-variable">$itemsArr</span>);
 			<span class="hljs-variable">$refItem</span> = <span class="hljs-keyword">new</span> \ReflectionClass(<span class="hljs-string">'CakeMailTest\TodoList\item'</span>);
 			<span class="hljs-variable">$item</span> = <span class="hljs-variable">$refItem</span>-&gt;newInstanceArgs(<span class="hljs-variable">$args</span>);
-		 	array_push(<span class="hljs-variable">$this</span>-&gt;listsArr, <span class="hljs-variable">$item</span>);
+		 	array_push(<span class="hljs-variable">$this</span>-&gt;items, <span class="hljs-variable">$item</span>);
 		 	<span class="hljs-keyword">return</span> <span class="hljs-variable">$item</span>;		
 	}
-	
-
 		
 	
 }

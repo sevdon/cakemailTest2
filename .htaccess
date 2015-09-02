@@ -1,0 +1,5 @@
+Options -MultiViews
+ErrorDocument 404 /404.php
+RewriteEngine on
+RewriteRule ^api/todolists /CakeMailTest/index.php  [NC]
+RewriteRule ^api/todolists/([^/]+) /CakeMailTest/index.php  [NC]

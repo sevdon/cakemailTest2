@@ -30,11 +30,6 @@
                 </a>
               
                 
-                <a class="source" href="actionType.html">
-                  actionType.php
-                </a>
-              
-                
                 <a class="source" href="controllerApi.html">
                   controllerApi.php
                 </a>
@@ -52,11 +47,6 @@
                 
                 <a class="source" href="item.html">
                   item.php
-                </a>
-              
-                
-                <a class="source" href="listObjects.html">
-                  listObjects.php
                 </a>
               
                 
@@ -87,11 +77,6 @@
                 
                 <a class="source" href="user.html">
                   user.php
-                </a>
-              
-                
-                <a class="source" href="validRequest.html">
-                  validRequest.php
                 </a>
               
             </div>
@@ -242,8 +227,10 @@
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prepareAndExecute</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$type_requete</span>=<span class="hljs-string">'update'</span>,<span class="hljs-variable">$tabmarqueurs</span>=null)</span> </span>{
 		<span class="hljs-keyword">try</span> {
 				
-			<span class="hljs-variable">$this</span>-&gt;prepare(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$type_requete</span>);
-			<span class="hljs-variable">$this</span>-&gt;execute_sqlprepared(<span class="hljs-variable">$tabmarqueurs</span>);
+			<span class="hljs-variable">$rs</span> = <span class="hljs-variable">$this</span>-&gt;prepare(<span class="hljs-variable">$sql</span>,<span class="hljs-variable">$type_requete</span>);
+			<span class="hljs-variable">$rs</span>-&gt;execute();
+			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$type_requete</span>==<span class="hljs-string">'INSERT'</span>) <span class="hljs-keyword">return</span> <span class="hljs-variable">$this</span>-&gt;pdo-&gt;lastInsertId();
+			<span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-variable">$rs</span>-&gt;rowCount();
 		} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
 				<span class="hljs-keyword">die</span>(<span class="hljs-string">'Query error on '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">' &lt;br/&gt; : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());
 		}
@@ -255,7 +242,7 @@
 		
 		<span class="hljs-keyword">if</span> ((!<span class="hljs-variable">$this</span>-&gt;check_injection_sql) || (<span class="hljs-variable">$this</span>-&gt;check_injection_sql &amp;&amp; <span class="hljs-keyword">self</span>::is_sql_valide(<span class="hljs-variable">$sql</span>))) {
 			<span class="hljs-keyword">try</span> {
-				<span class="hljs-variable">$this</span>-&gt;prep = <span class="hljs-variable">$this</span>-&gt;pdo-&gt;prepare(<span class="hljs-variable">$sql</span>);
+				<span class="hljs-keyword">return</span> <span class="hljs-variable">$this</span>-&gt;prep = <span class="hljs-variable">$this</span>-&gt;pdo-&gt;prepare(<span class="hljs-variable">$sql</span>);
 			} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
 				<span class="hljs-keyword">die</span>(<span class="hljs-string">'Query error on '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">' &lt;br/&gt; : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());
 			}
@@ -266,8 +253,8 @@
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">execute_sqlprepared</span><span class="hljs-params">(<span class="hljs-variable">$tabmarqueurs</span>=null)</span> </span>{
 		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;debugg_affiche) <span class="hljs-keyword">echo</span> <span class="hljs-string">'on execute'</span>;
 		<span class="hljs-keyword">try</span> {
-			<span class="hljs-keyword">if</span> (is_array(<span class="hljs-variable">$tabmarqueurs</span>)) <span class="hljs-variable">$this</span>-&gt;prep-&gt;execute(<span class="hljs-variable">$tabmarqueurs</span>);
-			<span class="hljs-keyword">else</span> <span class="hljs-variable">$this</span>-&gt;prep-&gt;execute();
+			<span class="hljs-keyword">if</span> (is_array(<span class="hljs-variable">$tabmarqueurs</span>)) <span class="hljs-keyword">return</span> <span class="hljs-variable">$this</span>-&gt;prep-&gt;execute(<span class="hljs-variable">$tabmarqueurs</span>);
+			<span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-variable">$this</span>-&gt;prep-&gt;execute();
 		} <span class="hljs-keyword">catch</span> (\PDOException <span class="hljs-variable">$e</span>) {
 				<span class="hljs-keyword">die</span>(<span class="hljs-string">'Query error on &lt;br/&gt; : '</span>.<span class="hljs-variable">$e</span>-&gt;getMessage());
 			}	

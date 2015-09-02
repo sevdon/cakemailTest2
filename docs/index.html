@@ -61,14 +61,18 @@
             <div class="content"><div class='highlight'><pre><span class="hljs-preprocessor">&lt;?php</span>
 <span class="hljs-keyword">require_once</span> <span class="hljs-keyword">__DIR__</span>.<span class="hljs-string">'/autoload.php'</span>;
 <span class="hljs-keyword">use</span> <span class="hljs-title">CakeMailTest</span>\<span class="hljs-title">TodoList</span>\<span class="hljs-title">controllerApi</span> <span class="hljs-title">as</span> <span class="hljs-title">controllerApi</span>;
-<span class="hljs-keyword">use</span> <span class="hljs-title">CakeMailTest</span>\<span class="hljs-title">TodoList</span>\<span class="hljs-title">ExceptionTodoList</span> <span class="hljs-title">as</span> <span class="hljs-title">exception</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">CakeMailTest</span>\<span class="hljs-title">TodoList</span>\<span class="hljs-title">ExceptionTodoList</span> <span class="hljs-title">as</span> <span class="hljs-title">ExceptionTodoList</span>;
+ob_start();
 <span class="hljs-keyword">try</span> {
 	<span class="hljs-variable">$API</span> = <span class="hljs-keyword">new</span> controllerApi();
 	<span class="hljs-variable">$API</span>-&gt;request();
-} <span class="hljs-keyword">catch</span> (<span class="hljs-keyword">exception</span> <span class="hljs-variable">$e</span>) {
+} <span class="hljs-keyword">catch</span> (ExceptionTodoList <span class="hljs-variable">$e</span>) {
 	<span class="hljs-keyword">echo</span> <span class="hljs-variable">$e</span>-&gt;getMessage();
 	<span class="hljs-keyword">exit</span>;
 }	
+<span class="hljs-variable">$content</span> = ob_get_contents();
+ob_end_clean();
+<span class="hljs-keyword">echo</span> <span class="hljs-variable">$content</span>;
 <span class="hljs-preprocessor">?&gt;</span></pre></div></div>
             
         </li>

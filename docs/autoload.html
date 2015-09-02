@@ -131,8 +131,7 @@
     <span class="hljs-comment">/* replace the namespace prefix with the base directory, replace namespace
     *  separators with directory separators in the relative class name, append  with .php
     */</span>
-    <span class="hljs-variable">$file</span> = <span class="hljs-variable">$base_dir</span> . str_replace(<span class="hljs-string">'\\'</span>, <span class="hljs-string">'/'</span>, <span class="hljs-variable">$relative_class</span>) . <span class="hljs-string">'.php'</span>;
-    <span class="hljs-keyword">if</span> (DEBBUGAGE_MODE) <span class="hljs-keyword">echo</span> <span class="hljs-variable">$file</span>.<span class="hljs-string">'&lt;br/&gt;'</span>;</pre></div></div>
+    <span class="hljs-variable">$file</span> = <span class="hljs-variable">$base_dir</span> . str_replace(<span class="hljs-string">'\\'</span>, <span class="hljs-string">'/'</span>, <span class="hljs-variable">$relative_class</span>) . <span class="hljs-string">'.php'</span>;</pre></div></div>
             
         </li>
         
@@ -142,6 +141,19 @@
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>if (DEBBUGAGE_MODE) echo $file.’<br/>‘;</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>if the file exists, require it</p>
 
