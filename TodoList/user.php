@@ -12,7 +12,7 @@ namespace CakeMailTest\TodoList;
 abstract class user {
 	
 	const ID = '1';
-	const TOKEN = '819e1f61626f992055f6167dcf3d9a86b32d4e79'; // detravaillerchezCakeMail
+	const TOKEN = '819e1f61626f992055f6167dcf3d9a86b32d4e'; // detravaillerchezCakeMail
 	
 	static function authorization() {
 		
