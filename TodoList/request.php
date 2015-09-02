@@ -52,7 +52,7 @@ final class request {
 		if (DEBBUGAGE_MODE) echo $method;
 		$args = array_filter($uriArr, function($val) { // filter for arguments only val begin with : 
 			$exp = '/^:/';
-			return preg_match($exp,$val); 
+			return (preg_match($exp,$val) || is_int($val)); 
 		});
 		$arg_str = implode('',$args);
 		$args = explode(':',substr($arg_str,1));
