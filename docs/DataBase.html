@@ -160,6 +160,26 @@
 	}
 	
 	
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query_select_json</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>)</span> </span>{
+		
+		<span class="hljs-keyword">if</span> ((!<span class="hljs-variable">$this</span>-&gt;check_injection_sql) || (<span class="hljs-variable">$this</span>-&gt;check_injection_sql &amp;&amp; <span class="hljs-keyword">self</span>::is_sql_valide(<span class="hljs-variable">$sql</span>))) {
+			<span class="hljs-keyword">if</span> (<span class="hljs-variable">$this</span>-&gt;debugg_affiche) <span class="hljs-keyword">echo</span> <span class="hljs-string">'on fait la requete SELECT: '</span>.<span class="hljs-variable">$sql</span>.<span class="hljs-string">'&lt;br/&gt;'</span>;
+			<span class="hljs-variable">$results</span> = <span class="hljs-variable">$this</span>-&gt;query(<span class="hljs-variable">$sql</span>);
+			<span class="hljs-variable">$i</span>=<span class="hljs-number">0</span>;
+			<span class="hljs-variable">$tab_json</span>= <span class="hljs-keyword">array</span>();
+			<span class="hljs-variable">$tab_ass</span>=<span class="hljs-keyword">array</span>();
+			<span class="hljs-keyword">while</span> (<span class="hljs-variable">$result</span> = <span class="hljs-variable">$results</span>-&gt;fetch()) {
+				<span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$result</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$key</span> =&gt; <span class="hljs-variable">$elem</span>) {
+					<span class="hljs-keyword">if</span> (<span class="hljs-variable">$key</span> !=<span class="hljs-string">'0'</span> &amp;&amp; <span class="hljs-variable">$key</span> !=<span class="hljs-string">'1'</span>) <span class="hljs-variable">$tab_ass</span>[<span class="hljs-variable">$key</span>] = stripslashes(<span class="hljs-variable">$elem</span>);
+				}			
+				<span class="hljs-variable">$i</span>++;
+				array_push(<span class="hljs-variable">$tab_json</span>,<span class="hljs-variable">$tab_ass</span>);
+			}
+			
+			<span class="hljs-keyword">return</span> json_decode(json_encode(<span class="hljs-variable">$tab_json</span>),<span class="hljs-keyword">true</span>);
+		} 
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+	}
 	
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query_select</span><span class="hljs-params">(<span class="hljs-variable">$sql</span>)</span> </span>{
 		
@@ -169,7 +189,7 @@
 			<span class="hljs-variable">$i</span>=<span class="hljs-number">0</span>;
 			<span class="hljs-keyword">while</span> (<span class="hljs-variable">$result</span> = <span class="hljs-variable">$results</span>-&gt;fetch()) {
 				<span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$result</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$key</span> =&gt; <span class="hljs-variable">$elem</span>) {
-					<span class="hljs-variable">$tab_ass</span>[<span class="hljs-variable">$i</span>][<span class="hljs-variable">$key</span>] = stripslashes(<span class="hljs-variable">$elem</span>);	
+					<span class="hljs-keyword">if</span> (<span class="hljs-variable">$key</span> !=<span class="hljs-string">'0'</span> &amp;&amp; <span class="hljs-variable">$key</span> !=<span class="hljs-string">'1'</span>)  <span class="hljs-variable">$tab_ass</span>[<span class="hljs-variable">$i</span>][<span class="hljs-variable">$key</span>] = stripslashes(<span class="hljs-variable">$elem</span>);	
 				}			
 				<span class="hljs-variable">$i</span>++;
 			}

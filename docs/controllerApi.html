@@ -119,8 +119,8 @@
 		<span class="hljs-keyword">if</span> (user::authorization()) {
 			<span class="hljs-variable">$reponse</span>-&gt;authorization(<span class="hljs-keyword">true</span>);
 			<span class="hljs-keyword">try</span> {
-				<span class="hljs-variable">$request</span> = <span class="hljs-keyword">new</span> request(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_URI'</span>],<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_METHOD'</span>]); <span class="hljs-comment">// send Request	</span>
-				call_user_func_array(<span class="hljs-keyword">array</span>(<span class="hljs-variable">$reponse</span>,<span class="hljs-string">'set_content'</span>),<span class="hljs-variable">$request</span>-&gt;getResponse());			
+				<span class="hljs-variable">$request</span> = <span class="hljs-keyword">new</span> request(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_URI'</span>],<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_METHOD'</span>]); 
+				call_user_func_array(<span class="hljs-keyword">array</span>(<span class="hljs-variable">$reponse</span>,<span class="hljs-string">'set_content'</span>),<span class="hljs-variable">$request</span>-&gt;getResponse()); <span class="hljs-comment">// send Request and set_content in response				</span>
 			} <span class="hljs-keyword">catch</span> (ExceptionTodoList <span class="hljs-variable">$e</span>) {
 				<span class="hljs-variable">$reponse</span>-&gt;set_content(<span class="hljs-string">'404'</span>,<span class="hljs-variable">$e</span>-&gt;getMessage(),<span class="hljs-keyword">null</span>);
 				<span class="hljs-keyword">echo</span> <span class="hljs-variable">$reponse</span>-&gt;send();

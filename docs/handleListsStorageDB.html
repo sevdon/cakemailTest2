@@ -232,9 +232,8 @@
 	
 	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_todolists</span><span class="hljs-params">()</span> </span>{
 		
-		 <span class="hljs-variable">$rs</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select(<span class="hljs-string">"SELECT lists.id, DATE_FORMAT(lists.datecrea,'%m-%d-%Y') as date FROM lists order by id ASC"</span>); 	 
-		 <span class="hljs-variable">$data</span> = json_decode(json_encode(<span class="hljs-variable">$rs</span>),<span class="hljs-keyword">true</span>);	
-		 <span class="hljs-keyword">return</span> (<span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_GETLIST_SUCCESS,<span class="hljs-variable">$data</span>));
+		 <span class="hljs-variable">$rs</span> = <span class="hljs-variable">$this</span>-&gt;DB-&gt;query_select_json(<span class="hljs-string">"SELECT lists.id, DATE_FORMAT(lists.datecrea,'%m-%d-%Y') as date FROM lists order by id ASC"</span>); 
+		 <span class="hljs-keyword">return</span> (<span class="hljs-keyword">array</span>(<span class="hljs-number">200</span>,responseMessage::MESSAGE_GETLIST_SUCCESS,<span class="hljs-variable">$rs</span>));
 	} 
 	
 	

@@ -147,7 +147,6 @@
 			
 			header(<span class="hljs-string">"Content-Type: $content_type"</span>);
 			header(<span class="hljs-string">"Cache-Control: no-cache, must-revalidate"</span>);
-			<span class="hljs-keyword">echo</span> <span class="hljs-variable">$this</span>-&gt;authorization;
 			<span class="hljs-keyword">return</span> json_encode(<span class="hljs-variable">$responseArr</span>);
 			
 		}

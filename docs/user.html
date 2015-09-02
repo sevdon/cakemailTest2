@@ -119,41 +119,17 @@
 	<span class="hljs-keyword">const</span> ID = <span class="hljs-string">'1'</span>;
 	<span class="hljs-keyword">const</span> TOKEN = <span class="hljs-string">'819e1f61626f992055f6167dcf3d9a86b32d4e79'</span>; <span class="hljs-comment">// detravaillerchezCakeMail</span>
 	
-	<span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">authorization</span><span class="hljs-params">()</span> </span>{</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
-              </div>
-              <p>return true;</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'PHP_AUTH_USER'</span>]) || !<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_METHOD'</span>]) || !<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_URI'</span>])) <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
-		<span class="hljs-variable">$pass</span> = <span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'PHP_AUTH_USER'</span>];
-		<span class="hljs-variable">$request</span> =<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_METHOD'</span>].<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_URI'</span>];
-		<span class="hljs-variable">$token</span> = sha1(<span class="hljs-keyword">self</span>::TOKEN.<span class="hljs-variable">$request</span>);
-		<span class="hljs-keyword">return</span> (TOKEN==<span class="hljs-variable">$pass</span>) ? <span class="hljs-keyword">true</span>:<span class="hljs-keyword">false</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>return ($token==$pass) ? true:false;        </p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>	}
+	<span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">authorization</span><span class="hljs-params">()</span> </span>{
+	
+		<span class="hljs-variable">$HEADERS</span> = apache_request_headers();
+		<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$HEADERS</span>[<span class="hljs-string">'Authorization'</span>]) || !<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_METHOD'</span>]) || !<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">'REQUEST_URI'</span>])) <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+		<span class="hljs-variable">$pass</span> = <span class="hljs-variable">$HEADERS</span>[<span class="hljs-string">'Authorization'</span>];
+	<span class="hljs-comment">/**	$request =$_SERVER['REQUEST_METHOD'].$_SERVER['REQUEST_URI'];
+		$token = sha1(self::TOKEN.$request);
+		return ($token==$pass) ? true:false;	// for a better token secure system
+     **/</span>		
+		<span class="hljs-keyword">return</span> (<span class="hljs-keyword">self</span>::TOKEN==<span class="hljs-variable">$pass</span>) ? <span class="hljs-keyword">true</span>:<span class="hljs-keyword">false</span>; <span class="hljs-comment">// a simple verification with the token</span>
+	}
 	
 }</pre></div></div>
             
