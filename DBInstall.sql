@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost:8889
--- Généré le :  Mer 26 Août 2015
+-- Généré le :  Mer 02 Septembre 2015 à 18:19
 -- Version du serveur :  5.5.42
 -- Version de PHP :  5.6.10
 
@@ -35,7 +35,7 @@ CREATE TABLE `items` (
 
 CREATE TABLE `lists` (
   `id` int(11) NOT NULL,
-  `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+  `datecrea` datetime NOT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -102,4 +102,3 @@ ALTER TABLE `lists`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
