@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 require_once __DIR__.'/autoload.php';
 use CakeMailTest\TodoList\controllerApi as controllerApi;
 use CakeMailTest\TodoList\ExceptionTodoList as ExceptionTodoList;

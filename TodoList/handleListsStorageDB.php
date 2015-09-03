@@ -41,7 +41,10 @@ final class handleListsStorageDB {
 	 */
 	
 	public function delete_todolists($id) {
+		
+		if (func_num_args()==0) throw new ExceptionToDoList ('Error delete list : missing id '); 
 		if (empty($id)) throw new ExceptionToDoList ('Error delete : missing id of todolist'); 
+		
 		$id = intval($id);
 		$count = $this->DB->prepareAndExecute("DELETE from lists WHERE id = $id",'DELETE'); // items are deleted by Trigger on DB
 		return ($count>0) ? array(200,responseMessage::MESSAGE_DEL_SUCCESS,array('id'=>$id)) :  array(404,responseMessage::MESSAGE_DEL_FAIL,null);
@@ -55,7 +58,8 @@ final class handleListsStorageDB {
 	
 	
 	public function put_items($id,$content,$status='') {
-		
+
+		if (func_num_args()<2) throw new ExceptionToDoList ('Error put item : missing id and content '); 
 		if (empty($id) || empty($content)) throw new ExceptionToDoList ('Error put item : missing id todolist or content item'); 
 		if (!self::list_existInDB($id)) throw new ExceptionToDoList ('Error put item : no todolist '.$id.' found');
 		if ($status=='' || !defined('CakeMailTest\TodoList\statusItem::'.strtoupper($status).'_STATUS')) $status = statusItem::DEFAULT_STATUS;
@@ -80,6 +84,7 @@ final class handleListsStorageDB {
 	 */
 	
 	public function delete_items($id,$id_item) {
+		if (func_num_args()<2) throw new ExceptionToDoList ('Error delete item : missing id and iditem '); 
 		 if (empty($id) || empty($id_item)) throw new ExceptionToDoList ('Error delete item : missing id todolist or id item');
 		 $id = intval($id);
 		 $id_item = intval($id_item);
@@ -98,6 +103,7 @@ final class handleListsStorageDB {
 	 */
 	
 	public function get_items($id,$status='') {
+		 if (func_num_args()<1) throw new ExceptionToDoList ('Error get item : missing id'); 
 		 if (empty($id)) throw new ExceptionToDoList ('Error get items : missing id of todolist'); 
 		 $id = intval($id);
 		 ($status !='') ? $filters = " AND status='".DataBase::format_text_sql($status)."' ": $filters=''; 
